@@ -38,13 +38,22 @@ class TestCli(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn(__version__, buf.getvalue())
 
-    def test_parse_stub_exit_code_3(self):
+    def test_parse_missing_file_exit_code_1(self):
         from planguard.cli import main
 
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
             rc = main(["parse", "不存在.docx"])
-        self.assertEqual(rc, 3)  # 3 = 功能尚未实现（py -m planguard 时为进程退出码）
+        self.assertEqual(rc, 1)  # 1 = 运行错误（文件不存在）
+        self.assertIn("文件不存在", err.getvalue())
+
+    def test_check_stub_exit_code_3(self):
+        from planguard.cli import main
+
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            rc = main(["check", "任意.docx"])
+        self.assertEqual(rc, 3)  # 3 = 功能尚未实现（M3 接通完整审查）
 
     def test_demo_runs(self):
         from planguard.cli import main

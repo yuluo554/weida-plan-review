@@ -6,12 +6,12 @@
 
 | 目录 | 内容 | 来源 | 许可/合规 | 状态 |
 | --- | --- | --- | --- | --- |
-| `samples/` | 专项方案样本 docx | 程序化自制（`scripts/make_gold.py`） | MIT，随仓库发布 | ⏳ M2 |
-| `intermediate/` | 解析中间格式样例（章节树/行文本/参数卡） | 生成器 + 解析器输出 | MIT | ⏳ M2 |
+| `samples/` | 专项方案样本 docx | 程序化自制（`scripts/make_gold.py --seed 2026`，10 份深基坑合成样例，不含真实项目信息） | MIT，随仓库发布 | ✅ 2026-09-26 |
+| `intermediate/` | 解析中间格式样例（章节树/行文本/参数卡） | 生成器 + 解析器输出 | MIT | ⏳ M3 |
 | `knowledge/raw/` | 规范原文（公开文本） | 官方/政府网站，登记 URL 与日期 | 公开文件，注明"以官方文本为准" | ⏳ M3 |
 | `knowledge/blocks/` | 条文块 JSON | 手工整理 | 同上 | ⏳ M3–M4 |
 | `knowledge/thresholds/` | 机器可读阈值表 | 手工整理，逐条核对 | 同上，标注"待核对/已核对" | ⏳ M3–M4 |
-| `gold/` | 配对真值（docx + truth.json） | 程序化自制 | MIT | ⏳ M2 |
+| `gold/` | 配对真值（truth.json：参数真值 + 注入差异 20 处） | 程序化自制（与 samples 同 seed 可复现） | MIT | ✅ 2026-09-26 |
 
 ## 规范来源清单（M3 起整理，逐条登记）
 

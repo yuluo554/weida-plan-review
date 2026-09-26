@@ -17,8 +17,9 @@
 | 统一中间表示（参数卡：值·单位·置信度·证据链） | ✅ 已实现 |
 | 规则引擎（required / threshold_min / threshold_max，结论挂依据） | ✅ 最小可用 |
 | 内置规则库样例（深基坑 + 高支模 5 条，含未启用的程序性规则展示） | ✅ 样例 |
-| CLI（info / demo / rules / parse / check） | ✅ 骨架可用 |
-| docx/pdf 方案解析器 | ⏳ M2 |
+| CLI（info / demo / rules / **parse** / check） | ✅ parse 已可用（docx） |
+| docx/pdf 方案解析器 + 参数提取（别名归一/伪空格/超范围丢弃） | 🔄 docx ✅ · pdf 收尾中 |
+| 配对真值数据生成器（10 份合成样例 + 注入差异 + truth.json） | ✅ M2 已落地 |
 | 规则库扩充（≥20 条，全量 check_type）+ 端到端审查 + 报告 | ⏳ M3 |
 | 条文知识库检索问答 + LLM 兜底抽取（防幻觉三件套） | ⏳ M4 |
 | 内置基准评测（解析 F1 / 端到端检出率·误报率，零 API 可复现） | ⏳ M4 |
@@ -47,13 +48,20 @@ flowchart LR
 # 骨架端到端演示：内置样例参数卡 × 样例规则 → 三级结论
 py -m planguard demo
 
+# 解析真实方案 docx → 参数卡 JSON（M2 可用；需 python-docx）
+py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple python-docx
+py -m planguard parse data/samples/gen_0001.docx
+
+# 重新生成配对真值样例语料（可复现：固定 seed）
+py scripts/make_gold.py --count 10 --seed 2026
+
 # 查看版本与模块状态
 py -m planguard info
 
 # 查看内置规则库
 py -m planguard rules
 
-# 运行测试（零依赖）
+# 运行测试（核心用例零依赖；docx 用例需 python-docx）
 py -m unittest discover -v
 ```
 
