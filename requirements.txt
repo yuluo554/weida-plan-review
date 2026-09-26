@@ -1,0 +1,17 @@
+# PlanGuard 依赖分层（骨架阶段核心链路零依赖，可全部注释状态运行）
+# 按里程碑分批安装（清华镜像: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .[parse]）
+# 安装前核对 Python 3.8 兼容版本。
+
+# ---- M2 解析层 ----
+# python-docx>=0.8.11
+# pdfplumber>=0.10
+
+# ---- M4 LLM 兜底 ----
+# openai>=1.30
+
+# ---- M5 Web 面板 ----
+# fastapi>=0.100
+# uvicorn>=0.23
+
+# ---- 开发 ----
+# pytest

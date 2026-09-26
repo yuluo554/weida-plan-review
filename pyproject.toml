@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "planguard"
+version = "0.1.0"
+description = "PlanGuard（方案卫士）—— 危大工程专项施工方案智能审查系统（规则优先 + LLM 兜底）"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "PlanGuard contributors" }]
+keywords = ["construction", "safety", "llm", "agent", "compliance", "review"]
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+# 核心链路零第三方依赖；解析/LLM/Web 按里程碑安装 extras（plan/02 §3 依赖分层）
+dependencies = []
+
+[project.optional-dependencies]
+parse = ["python-docx>=0.8.11", "pdfplumber>=0.10"]
+llm = ["openai>=1.30"]
+web = ["fastapi>=0.100", "uvicorn>=0.23"]
+dev = ["pytest"]
+
+[project.scripts]
+planguard = "planguard.cli:main"
+
+[tool.setuptools]
+packages = [
+    "planguard",
+    "planguard.ir",
+    "planguard.parsers",
+    "planguard.rules",
+    "planguard.knowledge",
+    "planguard.llm",
+    "planguard.report",
+    "planguard.web",
+]
+
+[tool.setuptools.package-data]
+planguard = ["rules/data/*.json"]

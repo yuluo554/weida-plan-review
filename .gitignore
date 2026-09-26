@@ -1,0 +1,35 @@
+# 赛题原始材料与个人材料（不入库）
+赛题/
+data/**/_private/
+
+# 本地私密配置
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# 运行产物
+output/
+outputs/
+run/
+*.log
+
+# 数据大文件（正式样例入库前先登记台账）
+data/samples/*.docx
+data/samples/*.pdf
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
