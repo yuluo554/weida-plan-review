@@ -12,6 +12,12 @@
     ],
     "dp.monitoring.frequency": [
       0.5
+    ],
+    "dp.support_type": [
+      "放坡+土钉墙"
+    ],
+    "dp.safety_grade": [
+      "二级"
     ]
   },
   "injected": [

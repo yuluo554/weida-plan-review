@@ -18,20 +18,14 @@ from pathlib import Path
 from . import __version__
 from .rules.engine import DEFAULT_RULES_DIR, RuleEngine, load_rules
 
-UNIMPLEMENTED = (
-    "该命令尚未实现：解析器在里程碑 M2、完整审查在 M3 接入"
-    "（路线图见 plan/05-里程碑.md）。"
-    "当前可运行 `py -m planguard demo` 查看骨架端到端演示。"
-)
-
 MODULE_STATUS = [
-    ("已就绪", "ir/schema       统一中间表示（参数卡/证据/结论）"),
-    ("最小可用", "rules/engine    规则引擎（required/threshold_min/threshold_max）"),
-    ("样例 5 条", "rules/data      规则库（深基坑 + 高支模）"),
-    ("M2 计划", "parsers/docx    docx 方案解析器"),
-    ("M2 计划", "parsers/pdf     文本型 pdf 解析器"),
-    ("M3 计划", "orchestrator    端到端流水线编排"),
-    ("M3/M5 计划", "report          审查报告导出（Markdown → docx）"),
+    ("已就绪", "ir/schema       统一中间表示（参数卡/证据/结论，含文本型取值）"),
+    ("全量可用", "rules/engine    规则引擎（required/threshold/within_range/enum/conditional/checklist）"),
+    ("20 条", "rules/data      规则库（深基坑，全部标注待核对的示例阈值）"),
+    ("已实现", "parsers/docx    docx 方案解析器"),
+    ("已实现", "parsers/pdf     文本型 pdf 解析器"),
+    ("M3 已接通", "orchestrator    端到端流水线编排"),
+    ("M3 Markdown", "report          审查报告导出（docx → M5）"),
     ("M4 计划", "knowledge       条文知识库与检索问答"),
     ("M4 计划", "llm             LLM 兜底抽取（防幻觉三件套）"),
     ("M5 计划", "web             Web 审查面板"),
@@ -99,13 +93,13 @@ def _demo_cards():
     ]
 
 
-def _print_review(result) -> None:
+def _print_review(result, header="PlanGuard 骨架端到端演示") -> None:
     from .ir.schema import ReviewResult
 
     assert isinstance(result, ReviewResult)
     s = result.summary()
-    print("== PlanGuard 骨架端到端演示 ==")
-    print("说明: 参数卡为内置样例；M2 起由解析器从方案文档自动提取。")
+    print("== %s ==" % header)
+    print("说明: 数值结论全部来自确定性规则引擎；每条结论附依据条款与原文证据。")
     print()
     print("提取参数卡 %d 张:" % len(result.cards))
     for card in result.cards:
@@ -197,14 +191,31 @@ def cmd_parse(args) -> int:
 
 
 def cmd_check(args) -> int:
-    print(
-        "完整审查（check）在里程碑 M3 接通：解析→提取→规则引擎→报告"
-        "（路线图见 plan/05-里程碑.md）。当前可运行：\n"
-        "  py -m planguard parse %s   # 解析并提取参数卡（M2 已可用）\n"
-        "  py -m planguard demo       # 骨架端到端演示" % args.path,
-        file=sys.stderr,
-    )
-    return 3
+    """M3 已接通：解析→提取→规则引擎→裁决，导出 Markdown 审查报告。
+
+    退出码: 0 通过/待确认；1 存在不合规；其他错误见退出码约定。
+    """
+    from .orchestrator import run
+
+    path = Path(args.path)
+    if not path.exists():
+        print("文件不存在: %s" % path, file=sys.stderr)
+        return 1
+    try:
+        result, trace = run(path, out_dir=args.report, rules_dir=args.rules_dir)
+    except NotImplementedError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
+    except (RuntimeError, ValueError) as exc:  # 缺依赖/坏格式等可读错误
+        print(str(exc), file=sys.stderr)
+        return 1
+    _print_review(result, header="PlanGuard 审查报告（CLI）")
+    if trace.stages:
+        print()
+        print("流水线: " + " → ".join("%s(%.3fs)" % (st.name, st.seconds) for st in trace.stages))
+    if result.meta.get("report"):
+        print("报告已导出: %s" % result.meta["report"])
+    return 1 if result.summary()["fail"] else 0
 
 
 def main(argv=None) -> int:
@@ -231,8 +242,10 @@ def main(argv=None) -> int:
     p_parse.add_argument("--out", help="结果写入 JSON 文件（默认打印到 stdout）")
     p_parse.set_defaults(func=cmd_parse)
 
-    p_check = sub.add_parser("check", help="完整审查并出报告（M3 实现）")
+    p_check = sub.add_parser("check", help="完整审查并导出 Markdown 报告（M3 已接通）")
     p_check.add_argument("path", help="方案 docx/pdf 路径")
+    p_check.add_argument("--report", default="output", help="报告输出目录（默认 output/）")
+    p_check.add_argument("--rules-dir", help="自定义规则库目录（默认内置规则库）")
     p_check.set_defaults(func=cmd_check)
 
     args = parser.parse_args(argv)

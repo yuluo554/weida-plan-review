@@ -44,6 +44,18 @@ PARAM_META: Dict[str, Dict[str, Any]] = {
 
 UNIT_CANON = {"米": "m", "毫米": "mm", "次/天": "次/d", "次/日": "次/d", "次每日": "次/d", "次每天": "次/d"}
 
+# 文本型（枚举类）参数：正则捕获组即 text_value，value 保持 None
+TEXT_PARAMS: Dict[str, Dict[str, Any]] = {
+    "dp.support_type": {
+        "name": "支护形式", "category": "deep_pit",
+        "patterns": [r"支护形式为(.{2,12}?)[，。；\s]", r"采用(.{2,12}?)支护[形工体]"],
+    },
+    "dp.safety_grade": {
+        "name": "基坑侧壁安全等级", "category": "deep_pit",
+        "patterns": [r"安全等级为([一二三]级)"],
+    },
+}
+
 _NUM = r"(\d+(?:\.\d+)?)"
 _FULLWIDTH = str.maketrans("０１２３４５６７８９．ＭｍｍＫｋＮｎ", "0123456789.MmmKkNn")
 
@@ -82,6 +94,7 @@ def extract_cards(result: ParseResult) -> Tuple[List[ParameterCard], Dict[str, A
     cards: List[ParameterCard] = []
     discarded: List[Dict[str, Any]] = []
     seen = set()
+    seen_text = set()   # 每个文本型参数只取第一处命中（全文唯一）
     # (行号, param) -> 已占用的匹配区间：长别名优先占位，短别名（"挖深"⊂"开挖深度"）不再重叠匹配
     consumed: Dict[Tuple[int, str], List[Tuple[int, int]]] = {}
 
@@ -89,6 +102,29 @@ def extract_cards(result: ParseResult) -> Tuple[List[ParameterCard], Dict[str, A
         if not line.text or not line.text.strip():
             continue
         norm = _normalize(line.text)
+        # 文本型（枚举类）参数
+        for param_id, spec in TEXT_PARAMS.items():
+            if param_id in seen_text:
+                continue
+            for pattern in spec["patterns"]:
+                m = re.search(pattern, norm)
+                if m:
+                    tv = m.group(1).strip()
+                    key = (param_id, "text", line_no, m.start(1))
+                    if key not in seen:
+                        seen.add(key)
+                        seen_text.add(param_id)
+                        cards.append(ParameterCard(
+                            param_id=param_id, name=spec["name"], value=None,
+                            unit="", text_value=tv, raw_text=m.group(0),
+                            category=spec["category"], confidence=1.0, source="rule",
+                            evidence=Evidence(
+                                doc=result.doc_name, section=line.section_path,
+                                page=line.page, line_text=line.text,
+                                char_start=line.char_start, char_end=line.char_end,
+                            ),
+                        ))
+                    break
         for param_id, alias_list in aliases.items():
             info = PARAM_META[param_id]
             taken = consumed.setdefault((line_no, param_id), [])
