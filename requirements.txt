@@ -2,9 +2,12 @@
 # 按里程碑分批安装（清华镜像: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .[parse]）
 # 安装前核对 Python 3.8 兼容版本。
 
-# ---- M2 解析层 ----
-# python-docx>=0.8.11
-# pdfplumber>=0.10
+# ---- M2 解析层（已验证可用版本） ----
+# python-docx>=0.8.11   （实测 1.1.2）
+# pdfplumber>=0.10      （实测 0.11.5）
+
+# ---- 测试辅助（生成中文 PDF 样例；py3.8 必须 <4，规避 md5 usedforsecurity 兼容问题） ----
+# reportlab<4           （实测 3.6.13）
 
 # ---- M4 LLM 兜底 ----
 # openai>=1.30
