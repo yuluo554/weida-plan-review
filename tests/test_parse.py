@@ -99,7 +99,9 @@ class TestDocxEndToEnd(unittest.TestCase):
             cards, _ = extract_cards(self.parser.parse(SAMPLES / truth["file"]))
             got = {}
             for c in cards:
-                got.setdefault(c.param_id, []).append(c.value)
+                # 文本型（枚举）参数取 text_value，数值参数取 value
+                v = c.text_value if c.text_value is not None else c.value
+                got.setdefault(c.param_id, []).append(v)
             got = {k: sorted(v) for k, v in got.items()}
             expected = {k: sorted(v) for k, v in truth["expected_cards"].items()}
             self.assertEqual(got, expected, msg="%s 参数卡与真值不一致" % truth["file"])

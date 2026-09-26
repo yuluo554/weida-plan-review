@@ -47,13 +47,13 @@ class TestCli(unittest.TestCase):
         self.assertEqual(rc, 1)  # 1 = 运行错误（文件不存在）
         self.assertIn("文件不存在", err.getvalue())
 
-    def test_check_stub_exit_code_3(self):
+    def test_check_missing_file_exit_code_1(self):
         from planguard.cli import main
 
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
-            rc = main(["check", "任意.docx"])
-        self.assertEqual(rc, 3)  # 3 = 功能尚未实现（M3 接通完整审查）
+            rc = main(["check", "任意不存在的.docx"])
+        self.assertEqual(rc, 1)  # 1 = 运行错误（文件不存在）
 
     def test_demo_runs(self):
         from planguard.cli import main
@@ -92,7 +92,10 @@ class TestRules(unittest.TestCase):
 class TestEngine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.engine = RuleEngine(load_rules(DEFAULT_RULES_DIR))
+        # smoke 用例针对样例规则文件（5 条）断言最小语义；全库 20 条的集成语义见 tests/test_m3.py
+        from planguard.rules.engine import DEFAULT_RULES_DIR as R
+
+        cls.engine = RuleEngine(load_rules(R / "deep_pit.sample.json"))
 
     def test_all_pass(self):
         cards = _cards(
@@ -101,9 +104,9 @@ class TestEngine(unittest.TestCase):
             ("dp.monitoring.frequency", 2.0, "次/d"),
             ("fs.support.height", 6.0, "m"),
         )
-        findings, skipped = self.engine.check(cards)
-        self.assertEqual(len(skipped), 0)  # enabled 规则全部可分派
-        self.assertEqual(len(self.engine.disabled), 1)  # R-DP-101 conditional_program 未启用
+        findings, skipped = self.engine.check(cards)  # 无 doc：conditional/checklist 类跳过
+        self.assertEqual(len(skipped), 1)  # R-DP-101 conditional_program 需要 doc 上下文
+        self.assertEqual(len(self.engine.disabled), 0)  # 全部 20 条启用
         self.assertEqual(len(findings), 4)
         self.assertTrue(all(f.result == "pass" for f in findings))
 

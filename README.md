@@ -4,7 +4,7 @@
 >
 > **规则优先 + LLM 兜底**：方案文档（docx/pdf）解析为结构化"参数卡"，与机器可读的规范规则库做确定性合规校核；每条结论挂依据条款与原文证据，多值冲突不硬判、输出"待人工确认"。
 
-🚧 **当前状态：M2 解析层完成（v0.1.0）** —— docx/pdf 方案 → 参数卡全链路可用，配对真值语料就绪；规则全量与端到端审查按 [plan/05-里程碑.md](plan/05-里程碑.md) 推进（M3）。
+🚧 **当前状态：M3 端到端审查完成（v0.1.0）** —— `check` 一条命令：docx/pdf 方案 → 参数卡 → 20 条深基坑规则确定性校核 → Markdown 审查报告；知识库/LLM 兜底/Web 面板按 [plan/05-里程碑.md](plan/05-里程碑.md) 推进（M4–M5）。
 
 ## 为什么做
 
@@ -14,12 +14,13 @@
 
 | 特性 | 状态 |
 | --- | --- |
-| 统一中间表示（参数卡：值·单位·置信度·证据链） | ✅ 已实现 |
-| 规则引擎（required / threshold_min / threshold_max，结论挂依据） | ✅ 最小可用 |
-| 内置规则库样例（深基坑 + 高支模 5 条，含未启用的程序性规则展示） | ✅ 样例 |
-| CLI（info / demo / rules / **parse** / check） | ✅ parse 已可用（docx） |
+| 统一中间表示（参数卡：值·单位·文本取值·置信度·证据链） | ✅ 已实现 |
+| 规则引擎（required / threshold / within_range / enum / conditional_program / checklist_section，结论挂依据） | ✅ 全量可用 |
+| 内置规则库（深基坑 20 条：阈值/漏项/枚举/程序性/章节齐套，示例阈值标注待核对） | ✅ M3 |
+| CLI（info / demo / rules / parse / **check**） | ✅ check 端到端可用 |
 | docx/pdf 方案解析器 + 参数提取（别名归一/伪空格/超范围丢弃/页码证据） | ✅ 已实现 |
 | 配对真值数据生成器（10 份合成样例 + 注入差异 + truth.json） | ✅ M2 已落地 |
+| 端到端流水线 + Markdown 审查报告（三级结论/证据/建议/签署栏） | ✅ M3 |
 | 规则库扩充（≥20 条，全量 check_type）+ 端到端审查 + 报告 | ⏳ M3 |
 | 条文知识库检索问答 + LLM 兜底抽取（防幻觉三件套） | ⏳ M4 |
 | 内置基准评测（解析 F1 / 端到端检出率·误报率，零 API 可复现） | ⏳ M4 |
@@ -51,6 +52,10 @@ py -m planguard demo
 # 解析真实方案 docx → 参数卡 JSON（M2 可用；需 python-docx）
 py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple python-docx
 py -m planguard parse data/samples/gen_0001.docx
+
+# 端到端审查：方案 → 20 条规则校核 → Markdown 报告（M3 可用）
+py -m planguard check data/samples/gen_0001.docx --report output
+# 退出码: 0 通过/待确认；1 存在不合规
 
 # 重新生成配对真值样例语料（可复现：固定 seed）
 py scripts/make_gold.py --count 10 --seed 2026
@@ -93,6 +98,17 @@ M1 计划+骨架 ✅ → M2 解析层+数据 → M3 规则全量+端到端 → M
 - 内置规则与阈值为**示例值**，标注"待核对"，以官方现行规范文本为准；
 - 本工具辅助预审，**不替代专家论证**；最终结论以人工审查为准；
 - 样例数据均为程序化自制，不含真实项目信息。
+
+## 已知环境问题（Windows）
+
+个别机器（本仓库开发机实测）Python 写入 `__pycache__` 字节码时偶发损坏，表现为运行/测试随机 `SystemError: unknown opcode` 甚至段错误。对策——禁止写字节码后运行：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 py -m unittest discover
+PYTHONDONTWRITEBYTECODE=1 py -m planguard check 方案.docx
+```
+
+若频繁出现，建议检查磁盘健康与杀毒软件对 Python 目录的实时扫描。
 
 ## License
 

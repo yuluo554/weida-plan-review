@@ -10,6 +10,12 @@
     ],
     "dp.monitoring.frequency": [
       1.0
+    ],
+    "dp.support_type": [
+      "地下连续墙+内支撑"
+    ],
+    "dp.safety_grade": [
+      "二级"
     ]
   },
   "injected": [

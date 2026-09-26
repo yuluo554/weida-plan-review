@@ -30,6 +30,7 @@ class ParameterCard:
     name: str              # 中文参数名
     value: Optional[float] = None
     unit: str = ""
+    text_value: Optional[str] = None  # 文本型取值（枚举类参数：支护形式/安全等级等）
     raw_text: str = ""     # 原文数值表达，如 "≥5.4m"
     category: str = ""     # deep_pit / formwork_support / lifting
     confidence: float = 1.0

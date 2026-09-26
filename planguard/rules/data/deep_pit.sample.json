@@ -52,6 +52,7 @@
     "category": "formwork_support",
     "check_type": "required",
     "param": "fs.support.height",
+    "only_if_text": ["高支模", "模板支撑", "模板工程"],
     "basis": "建办质〔2018〕31号：模板支撑工程应明确搭设高度等关键参数（条文编号待核对）",
     "level": "强制",
     "severity": "error",
@@ -65,14 +66,13 @@
     "category": "deep_pit",
     "check_type": "conditional_program",
     "param": "dp.excavation_depth",
-    "value": 5,
-    "unit": "m",
+    "condition": {"min": 5},
+    "require_text": "专家论证",
     "basis": "住建部令第37号/建办质〔2018〕31号：超过一定规模的危大工程应组织专家论证（待核对）",
     "level": "强制",
     "severity": "error",
     "advice": "方案未体现专家论证程序，请补充论证材料或组织论证。",
-    "enabled": false,
-    "stage": "M4",
-    "note": "骨架阶段未启用：需要章节级信息（资料完备性检查），M4 实现"
+    "enabled": true,
+    "stage": "M3"
   }
 ]

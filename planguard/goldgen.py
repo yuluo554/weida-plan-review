@@ -70,10 +70,12 @@ def make_spec(rng: random.Random, idx: int, injections: List[str]) -> Dict[str, 
         ]),
     ]
 
-    expected: Dict[str, List[float]] = {
+    expected: Dict[str, List[Any]] = {
         "dp.excavation_depth": [depth],
         "dp.retaining.displacement": [float(disp)],
         "dp.monitoring.frequency": [float(freq)],
+        "dp.support_type": [support],
+        "dp.safety_grade": ["二级"],
     }
     injected: List[Dict[str, Any]] = []
 

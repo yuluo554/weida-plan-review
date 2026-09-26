@@ -9,6 +9,12 @@
     ],
     "dp.monitoring.frequency": [
       2.0
+    ],
+    "dp.support_type": [
+      "钢板桩+内支撑"
+    ],
+    "dp.safety_grade": [
+      "二级"
     ]
   },
   "injected": [
