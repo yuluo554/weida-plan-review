@@ -24,9 +24,8 @@ outputs/
 run/
 *.log
 
-# 数据大文件（正式样例入库前先登记台账）
-data/samples/*.docx
-data/samples/*.pdf
+# 生成样例语料（scripts/make_gold.py，合成数据，随仓库入库支撑评测复现）；
+# 真实/大文件私料放 data/**/_private/（上方已忽略）
 
 # IDE / OS
 .idea/

@@ -11,6 +11,7 @@
 退出码: 0 成功；1 运行错误；2 用法错误；3 功能尚未实现。
 """
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -154,14 +155,56 @@ def cmd_demo(_args) -> int:
 
 
 def cmd_parse(args) -> int:
-    if args.path and not Path(args.path).exists():
-        print("文件不存在: %s" % args.path, file=sys.stderr)
-    print(UNIMPLEMENTED, file=sys.stderr)
-    return 3
+    """M2 已实现：docx → 解析中间格式 → 参数卡（PDF 解析器 M2 收尾）。"""
+    from .extract import extract_cards
+    from .parsers.docx_parser import DocxParser
+    from .parsers.pdf_parser import PdfParser
+
+    path = Path(args.path)
+    if not path.exists():
+        print("文件不存在: %s" % path, file=sys.stderr)
+        return 1
+    parser_cls = {".docx": DocxParser, ".pdf": PdfParser}.get(path.suffix.lower())
+    if parser_cls is None:
+        print("不支持的格式: %s（当前支持 .docx / .pdf）" % path.suffix, file=sys.stderr)
+        return 1
+    try:
+        parsed = parser_cls().parse(path)
+    except NotImplementedError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
+    except RuntimeError as exc:  # 缺依赖等可读错误
+        print(str(exc), file=sys.stderr)
+        return 1
+    cards, meta = extract_cards(parsed)
+    payload = {
+        "doc": parsed.doc_name,
+        "sections": len(parsed.sections),
+        "lines": len(parsed.lines),
+        "cards": [c.to_dict() for c in cards],
+        "meta": meta,
+    }
+    text = json.dumps(payload, ensure_ascii=False, indent=2)
+    if args.out:
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+        print("已写入 %s（参数卡 %d 张 / 章节 %d / 行 %d）"
+              % (out, len(cards), len(parsed.sections), len(parsed.lines)))
+    else:
+        print(text)
+    return 0
 
 
 def cmd_check(args) -> int:
-    return cmd_parse(args)
+    print(
+        "完整审查（check）在里程碑 M3 接通：解析→提取→规则引擎→报告"
+        "（路线图见 plan/05-里程碑.md）。当前可运行：\n"
+        "  py -m planguard parse %s   # 解析并提取参数卡（M2 已可用）\n"
+        "  py -m planguard demo       # 骨架端到端演示" % args.path,
+        file=sys.stderr,
+    )
+    return 3
 
 
 def main(argv=None) -> int:
@@ -183,8 +226,9 @@ def main(argv=None) -> int:
     p_rules.add_argument("--dir", dest="rules_dir", help="自定义规则库目录（默认内置样例）")
     p_rules.set_defaults(func=cmd_rules)
 
-    p_parse = sub.add_parser("parse", help="解析方案文档为参数卡（M2 实现）")
+    p_parse = sub.add_parser("parse", help="解析方案文档为参数卡（docx 已可用，pdf 收尾中）")
     p_parse.add_argument("path", help="方案 docx/pdf 路径")
+    p_parse.add_argument("--out", help="结果写入 JSON 文件（默认打印到 stdout）")
     p_parse.set_defaults(func=cmd_parse)
 
     p_check = sub.add_parser("check", help="完整审查并出报告（M3 实现）")
