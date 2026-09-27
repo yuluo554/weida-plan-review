@@ -121,6 +121,14 @@ PYTHONDONTWRITEBYTECODE=1 py -m planguard check 方案.docx
 
 若频繁出现，建议检查磁盘健康与杀毒软件对 Python 目录的实时扫描。
 
+**Git 推送**：本仓库已配置 `http.proxy=127.0.0.1:7897`（本机代理）。2026-09-27 实测：代理未开启时**直连推送同样可用**，此时用：
+
+```bash
+git -c http.proxy= -c https.proxy= push
+```
+
+推送失败先重试，再切换直连。
+
 ## License
 
 [MIT](LICENSE)
