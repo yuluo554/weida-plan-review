@@ -105,13 +105,18 @@ $ git -c http.proxy= -c https.proxy= push --force origin main
   仅装包通道不同；仓库功能验证不受影响。
 - 该问题为本机环境问题，与仓库内容无关；干净 Windows 机器按 README 流程不会遇到。
 
-## 6. 执行记录回填
+## 6. 执行记录回填（2026-09-27 实测）
 
-- 历史重写：`git filter-branch --tree-filter`（sed 将 `C:\Users\<机主名>` 前缀替换为
-  `C:\Users\<username>`，作用于 plan/*.md）执行成功；重写后全历史含机主用户名字面值的
-  匹配数 = **0**（`git log --all -p` 复核，含全部提交与文件）；refs/original 已清 +
-  `git gc --prune=now`。
-- force push：`git -c http.proxy= -c https.proxy= push --force origin main` 成功
-  （代理连接失败时按 README 切直连）。
-- 推送后复核：GitHub 上全新 clone → 全历史机主用户名字面值匹配数 = 0；
-  `py -m planguard demo` + 全量测试在新 clone 复跑通过（结果见下）。
+- **历史重写（两轮 filter-branch --tree-filter，均作用于 plan/\*.md）**：
+  - 第 1 轮：sed 将路径前缀 `C:\Users\<机主名>` → `C:\Users\<username>`（重写前勘察命中
+    6 个提交 10 处：HANDOFF-M4×5、HANDOFF-M5×3、HANDOFF-M6×1、RELEASE-M6 旧版×1）；
+  - 第 2 轮：清洗历史 blob 中残留的机主用户名字面值（RELEASE-M6 旧版两版里 grep 命令示例
+    共 4 行）→ `<owner>`；
+  - 每轮后均执行 `rm -rf .git/refs/original && git reflog expire --expire=now --all &&
+    git gc --prune=now --aggressive`。
+- **终验（全部 0）**：`git rev-list --all` 逐提交 `git grep "C:.Users.<机主名字面值>"` = 0；
+  `git log --all -p | grep -c <机主名字面值>` = 0；提交信息扫描 = 0；工作树 = 0。
+- **force push 实测**：代理直推失败（`Failed to connect to github.com port 443 via 127.0.0.1`，
+  与交接文档记录一致）→ `git -c http.proxy= -c https.proxy= push --force origin main` 成功，
+  远端 `f028207...9ae0d42 main -> main (forced update)`。
+- **推送后复核**：GitHub 全新 clone 结果见下（历史 0 命中 + demo/测试复跑通过）。
