@@ -22,7 +22,7 @@ dependencies = []
 [project.optional-dependencies]
 parse = ["python-docx>=0.8.11", "pdfplumber>=0.10"]
 llm = ["openai>=1.30"]
-web = ["fastapi>=0.100", "uvicorn>=0.23"]
+web = ["fastapi>=0.100", "uvicorn>=0.23", "python-multipart>=0.0.5"]  # multipart 为 File 上传必需（M6 干净环境实测缺它会启动即崩）
 dev = ["pytest", "reportlab<4", "httpx<0.28"]  # reportlab 仅测试用（生成中文 PDF 样例）；httpx 供 FastAPI TestClient
 
 [project.scripts]
