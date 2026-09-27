@@ -1,0 +1,39 @@
+{
+  "file": "gen_0014.docx",
+  "category": "deep_pit",
+  "seed": 2026,
+  "title": "深基坑土方开挖及支护专项施工方案（合成样例）",
+  "expected_cards": {
+    "dp.retaining.displacement": [
+      24.0
+    ],
+    "dp.monitoring.frequency": [
+      2.5
+    ],
+    "dp.support_type": [
+      "钢板桩+内支撑"
+    ],
+    "dp.safety_grade": [
+      "二级"
+    ]
+  },
+  "injected": [
+    {
+      "type": "unit_error",
+      "detail": "开挖深度误写为900m（超物理范围，提取器应丢弃）",
+      "expect": {
+        "rule_id": "R-DP-001",
+        "result": "fail"
+      }
+    },
+    {
+      "type": "missing_section",
+      "detail": "缺少「应急处置措施」章节",
+      "expect": {
+        "rule_id": "R-DP-051",
+        "result": "fail",
+        "since": "M3"
+      }
+    }
+  ]
+}

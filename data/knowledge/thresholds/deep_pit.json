@@ -1,0 +1,443 @@
+{
+  "meta": {
+    "category": "deep_pit",
+    "compiled": "2026-09-27",
+    "note": "深基坑高频阈值表（L3，机器可读，规则库上游）；全部为示例值/要点整理，逐条标'待核对'，以官方现行文本为准"
+  },
+  "thresholds": [
+    {
+      "id": "T-DP-001",
+      "param": "dp.excavation_depth",
+      "name": "专项施工方案编制门槛",
+      "op": ">=",
+      "value": 3,
+      "unit": "m",
+      "condition": "基坑（槽）土方开挖、支护、降水工程",
+      "basis": "开挖深度超过3m（含3m）属危大工程，应编制专项施工方案",
+      "doc": "建办质〔2018〕31号",
+      "article_no": "附件1（条号待核对）",
+      "keywords": [
+        "专项施工方案",
+        "编制",
+        "开挖深度",
+        "危大"
+      ]
+    },
+    {
+      "id": "T-DP-002",
+      "param": "dp.excavation_depth",
+      "name": "专家论证门槛（超过一定规模）",
+      "op": ">=",
+      "value": 5,
+      "unit": "m",
+      "condition": "基坑（槽）土方开挖、支护、降水工程",
+      "basis": "开挖深度超过5m（含5m）属超过一定规模的危大工程，应组织专家论证",
+      "doc": "建办质〔2018〕31号",
+      "article_no": "附件2（条号待核对）",
+      "keywords": [
+        "专家论证",
+        "超过一定规模",
+        "论证"
+      ]
+    },
+    {
+      "id": "T-DP-003",
+      "param": "dp.excavation_depth",
+      "name": "开挖深度合理区间",
+      "op": "range",
+      "value": [
+        2,
+        50
+      ],
+      "unit": "m",
+      "condition": "深基坑方案合理性校核（示例）",
+      "basis": "超出常见区间的深度取值应复核（防解析/笔误）",
+      "doc": "工程合理性校核（示例）",
+      "article_no": "-",
+      "keywords": [
+        "开挖深度",
+        "合理",
+        "区间"
+      ]
+    },
+    {
+      "id": "T-DP-004",
+      "param": "dp.retaining.displacement",
+      "name": "支护结构顶部水平位移控制值上限",
+      "op": "<=",
+      "value": 30,
+      "unit": "mm",
+      "condition": "安全等级二级（示例）",
+      "basis": "位移控制值/报警值按安全等级与周边环境确定（示例值）",
+      "doc": "JGJ 120-2012 / GB 50497-2019",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "位移控制值",
+        "水平位移",
+        "报警值"
+      ]
+    },
+    {
+      "id": "T-DP-005",
+      "param": "dp.retaining.displacement",
+      "name": "位移控制值合理下限",
+      "op": ">=",
+      "value": 5,
+      "unit": "mm",
+      "condition": "工程合理性校核（示例）",
+      "basis": "位移控制值明显偏小应复核取值依据",
+      "doc": "工程合理性校核（示例）",
+      "article_no": "-",
+      "keywords": [
+        "位移控制值",
+        "下限",
+        "偏小"
+      ]
+    },
+    {
+      "id": "T-DP-006",
+      "param": "dp.retaining.displacement",
+      "name": "位移控制值合理上限",
+      "op": "<=",
+      "value": 100,
+      "unit": "mm",
+      "condition": "工程合理性校核（示例）",
+      "basis": "位移控制值超出合理区间应与设计文件核对",
+      "doc": "工程合理性校核（示例）",
+      "article_no": "-",
+      "keywords": [
+        "位移控制值",
+        "上限",
+        "合理区间"
+      ]
+    },
+    {
+      "id": "T-DP-007",
+      "param": "dp.retaining.displacement",
+      "name": "位移异常上限（复核用）",
+      "op": "<=",
+      "value": 500,
+      "unit": "mm",
+      "condition": "工程合理性校核（示例）",
+      "basis": "异常偏大取值应复核（防单位/笔误）",
+      "doc": "工程合理性校核（示例）",
+      "article_no": "-",
+      "keywords": [
+        "位移",
+        "异常",
+        "复核"
+      ]
+    },
+    {
+      "id": "T-DP-008",
+      "param": "dp.monitoring.frequency",
+      "name": "监测频率下限",
+      "op": ">=",
+      "value": 1,
+      "unit": "次/d",
+      "condition": "基坑开挖期间（示例）",
+      "basis": "开挖期间监测频率不应低于1次/d（示例值，按安全等级调整）",
+      "doc": "GB 50497-2019",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "监测频率",
+        "下限",
+        "开挖期间"
+      ]
+    },
+    {
+      "id": "T-DP-009",
+      "param": "dp.monitoring.frequency",
+      "name": "监测频率建议值（开挖至底板）",
+      "op": ">=",
+      "value": 2,
+      "unit": "次/d",
+      "condition": "开挖至坑底期间（示例，一级基坑）",
+      "basis": "开挖至底板期间宜加密至2次/d（示例建议值）",
+      "doc": "GB 50497-2019",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "监测频率",
+        "开挖至底板",
+        "加密",
+        "建议"
+      ]
+    },
+    {
+      "id": "T-DP-010",
+      "param": "dp.monitoring.frequency",
+      "name": "监测频率合理性上限",
+      "op": "<=",
+      "value": 24,
+      "unit": "次/d",
+      "condition": "工程合理性校核（示例）",
+      "basis": "异常高频取值应复核（防笔误）",
+      "doc": "工程合理性校核（示例）",
+      "article_no": "-",
+      "keywords": [
+        "监测频率",
+        "上限",
+        "复核"
+      ]
+    },
+    {
+      "id": "T-DP-011",
+      "param": "dp.safety_grade",
+      "name": "基坑侧壁/支护结构安全等级",
+      "op": "enum",
+      "value": [
+        "一级",
+        "二级",
+        "三级"
+      ],
+      "unit": "",
+      "condition": "按破坏后果划分",
+      "basis": "安全等级分为一级、二级、三级，对应重要性系数1.10/1.00/0.90",
+      "doc": "JGJ 120-2012",
+      "article_no": "3.1.2（待核对）",
+      "keywords": [
+        "安全等级",
+        "侧壁安全等级",
+        "重要性系数"
+      ]
+    },
+    {
+      "id": "T-DP-012",
+      "param": "dp.safety_grade",
+      "name": "安全等级与监测项目对应",
+      "op": "info",
+      "value": "一级基坑应测项目最多，二、三级递减",
+      "unit": "",
+      "condition": "监测项目按等级确定",
+      "basis": "监测项目表按基坑安全等级确定（具体项目表待核对）",
+      "doc": "GB 50497-2019",
+      "article_no": "第4章（待核对）",
+      "keywords": [
+        "监测项目",
+        "安全等级"
+      ]
+    },
+    {
+      "id": "T-DP-013",
+      "param": "dp.retaining.embedment",
+      "name": "嵌固深度验算要求",
+      "op": "info",
+      "value": "满足整体稳定/抗隆起/抗渗流验算",
+      "unit": "",
+      "condition": "桩墙式支护",
+      "basis": "嵌固深度应经稳定性验算确定并满足构造要求",
+      "doc": "JGJ 120-2012",
+      "article_no": "4.x（待核对）",
+      "keywords": [
+        "嵌固深度",
+        "稳定性",
+        "抗隆起"
+      ]
+    },
+    {
+      "id": "T-DP-014",
+      "param": "dp.groundwater.level",
+      "name": "降水控制深度",
+      "op": ">=",
+      "value": 0.5,
+      "unit": "m",
+      "condition": "地下水位降至坑底以下（示例）",
+      "basis": "降水应使地下水位低于坑底一定深度（示例≥0.5m）",
+      "doc": "JGJ 120-2012",
+      "article_no": "8.x（待核对）",
+      "keywords": [
+        "降水",
+        "地下水位",
+        "坑底"
+      ]
+    },
+    {
+      "id": "T-DP-015",
+      "param": "dp.edge_load",
+      "name": "坑边堆载限值",
+      "op": "<=",
+      "value": 20,
+      "unit": "kPa",
+      "condition": "基坑周边（示例）",
+      "basis": "坑边堆载不得超过设计允许值（示例值）",
+      "doc": "JGJ 120-2012 / JGJ 311-2013",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "坑边荷载",
+        "堆载",
+        "限值"
+      ]
+    },
+    {
+      "id": "T-DP-016",
+      "param": "dp.ex.excavation_layer",
+      "name": "分层开挖厚度",
+      "op": "info",
+      "value": "分层分段开挖，层厚按支护形式确定",
+      "unit": "",
+      "condition": "土方开挖",
+      "basis": "土方开挖应分层分段，先撑后挖、严禁超挖",
+      "doc": "JGJ 311-2013",
+      "article_no": "3.x/5.x（待核对）",
+      "keywords": [
+        "分层开挖",
+        "开挖厚度",
+        "超挖"
+      ]
+    },
+    {
+      "id": "T-DP-017",
+      "param": "dp.anchor.inclination",
+      "name": "锚杆倾角宜取区间",
+      "op": "range",
+      "value": [
+        15,
+        25
+      ],
+      "unit": "°",
+      "condition": "锚杆支护（宜值）",
+      "basis": "锚杆倾角宜为15°～25°，不应大于45°",
+      "doc": "JGJ 120-2012",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "锚杆",
+        "倾角"
+      ]
+    },
+    {
+      "id": "T-DP-018",
+      "param": "dp.monitoring.spacing",
+      "name": "顶部水平位移监测点间距",
+      "op": "<=",
+      "value": 20,
+      "unit": "m",
+      "condition": "围护墙顶部（示例）",
+      "basis": "顶部水平位移监测点间距不宜大于20m（示例值）",
+      "doc": "GB 50497-2019",
+      "article_no": "第5章（待核对）",
+      "keywords": [
+        "监测点",
+        "间距",
+        "布点"
+      ]
+    },
+    {
+      "id": "T-DP-019",
+      "param": "dp.monitoring.patrol",
+      "name": "巡视检查频次",
+      "op": ">=",
+      "value": 1,
+      "unit": "次/d",
+      "condition": "监测期间（示例）",
+      "basis": "监测期间应每天进行巡视检查（示例≥1次/d）",
+      "doc": "GB 50497-2019",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "巡视检查",
+        "巡视频次"
+      ]
+    },
+    {
+      "id": "T-DP-020",
+      "param": "dp.monitoring.benchmarks",
+      "name": "监测基准点数量",
+      "op": ">=",
+      "value": 3,
+      "unit": "个",
+      "condition": "监测网（待核对）",
+      "basis": "基准点应设在影响范围外且数量不少于3个（待核对）",
+      "doc": "GB 50497-2019",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "基准点",
+        "监测网"
+      ]
+    },
+    {
+      "id": "T-DP-021",
+      "param": "dp.expert_review.panel",
+      "name": "论证专家人数下限",
+      "op": ">=",
+      "value": 5,
+      "unit": "名",
+      "condition": "超过一定规模的危大工程论证",
+      "basis": "专家应从专家库选取且人数不得少于5名；利害关系人不得担任专家",
+      "doc": "住建部令第37号",
+      "article_no": "第十三条",
+      "keywords": [
+        "专家论证",
+        "专家人数",
+        "专家库"
+      ]
+    },
+    {
+      "id": "T-DP-022",
+      "param": "dp.third_party_monitoring",
+      "name": "第三方监测委托",
+      "op": "info",
+      "value": "建设单位委托具备相应勘察资质单位",
+      "unit": "",
+      "condition": "按规定需第三方监测的危大工程",
+      "basis": "第三方监测由建设单位委托具有相应资质的单位实施",
+      "doc": "住建部令第37号",
+      "article_no": "第十九条（待核对）",
+      "keywords": [
+        "第三方监测",
+        "监测单位",
+        "委托"
+      ]
+    },
+    {
+      "id": "T-DP-023",
+      "param": "dp.plan.approval",
+      "name": "专项方案审批签字要求",
+      "op": "info",
+      "value": "施工单位技术负责人签字盖章+总监理工程师审查签章",
+      "unit": "",
+      "condition": "全部危大工程专项施工方案",
+      "basis": "专项施工方案经技术负责人审核签字、加盖公章，总监理工程师审查签字、加盖执业印章后方可实施",
+      "doc": "住建部令第37号",
+      "article_no": "第十一条",
+      "keywords": [
+        "审批",
+        "签字",
+        "审核",
+        "总监理工程师"
+      ]
+    },
+    {
+      "id": "T-DP-024",
+      "param": "dp.emergency.drill",
+      "name": "应急演练频次",
+      "op": ">=",
+      "value": 1,
+      "unit": "次",
+      "condition": "基坑施工期间（示例）",
+      "basis": "应编制应急预案、配备应急物资并定期组织演练（示例≥1次）",
+      "doc": "JGJ 311-2013",
+      "article_no": "（条号待核对）",
+      "keywords": [
+        "应急演练",
+        "应急预案",
+        "应急物资"
+      ]
+    },
+    {
+      "id": "T-DP-025",
+      "param": "dp.monitoring.alarm",
+      "name": "监测报警双控原则",
+      "op": "info",
+      "value": "累计变化量与变化速率双控",
+      "unit": "",
+      "condition": "监测报警值确定",
+      "basis": "监测报警值由设计单位确定，实行累计值与速率双控；达到报警值应加密监测并及时报告",
+      "doc": "GB 50497-2019",
+      "article_no": "第8章（待核对）",
+      "keywords": [
+        "报警值",
+        "变化速率",
+        "累计"
+      ]
+    }
+  ]
+}

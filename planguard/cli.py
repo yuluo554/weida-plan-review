@@ -7,6 +7,7 @@
     py -m planguard rules             查看内置规则库
     py -m planguard parse <方案路径>   docx/pdf 解析（M2 实现）
     py -m planguard check <方案路径>   完整审查（M3 实现）
+    py -m planguard ask <问题>        条文知识库问答（M4 实现）
 
 退出码: 0 成功；1 运行错误；2 用法错误；3 功能尚未实现。
 """
@@ -26,8 +27,8 @@ MODULE_STATUS = [
     ("已实现", "parsers/pdf     文本型 pdf 解析器"),
     ("M3 已接通", "orchestrator    端到端流水线编排"),
     ("M3 Markdown", "report          审查报告导出（docx → M5）"),
-    ("M4 计划", "knowledge       条文知识库与检索问答"),
-    ("M4 计划", "llm             LLM 兜底抽取（防幻觉三件套）"),
+    ("M4 已实现", "knowledge       条文知识库与检索问答（ask 命令）"),
+    ("M4 已实现", "llm             LLM 兜底抽取（防幻觉三件套，check --llm）"),
     ("M5 计划", "web             Web 审查面板"),
 ]
 
@@ -202,7 +203,8 @@ def cmd_check(args) -> int:
         print("文件不存在: %s" % path, file=sys.stderr)
         return 1
     try:
-        result, trace = run(path, out_dir=args.report, rules_dir=args.rules_dir)
+        result, trace = run(path, out_dir=args.report, rules_dir=args.rules_dir,
+                            use_llm=args.llm)
     except NotImplementedError as exc:
         print(str(exc), file=sys.stderr)
         return 3
@@ -216,6 +218,26 @@ def cmd_check(args) -> int:
     if result.meta.get("report"):
         print("报告已导出: %s" % result.meta["report"])
     return 1 if result.summary()["fail"] else 0
+
+
+def cmd_ask(args) -> int:
+    """M4 已实现：知识库问答——L3 阈值表结构化命中直接回答，否则 L2 条文块 top-k。"""
+    from .knowledge.store import DEFAULT_KNOWLEDGE_DIR, ask
+
+    query = (args.query or "").strip()
+    if not query:
+        print("问题为空。用法: py -m planguard ask \"基坑开挖深度超过多少需要专家论证\"",
+              file=sys.stderr)
+        return 2
+    result = ask(query, args.kdir or DEFAULT_KNOWLEDGE_DIR, top_k=args.top)
+    print(result["answer"])
+    if result["sources"]:
+        print()
+        print("来源: " + "; ".join(
+            ("%s %s" % (s.get("doc", ""), s.get("article_no", ""))).strip()
+            for s in result["sources"]))
+    print("注: 知识库条目均为整理值并标注待核对，以官方现行文本为准。")
+    return 0
 
 
 def main(argv=None) -> int:
@@ -246,7 +268,15 @@ def main(argv=None) -> int:
     p_check.add_argument("path", help="方案 docx/pdf 路径")
     p_check.add_argument("--report", default="output", help="报告输出目录（默认 output/）")
     p_check.add_argument("--rules-dir", help="自定义规则库目录（默认内置规则库）")
+    p_check.add_argument("--llm", action="store_true",
+                         help="启用 LLM 兜底抽取（需 .env 配置；未配置或失败自动降级纯规则）")
     p_check.set_defaults(func=cmd_check)
+
+    p_ask = sub.add_parser("ask", help="条文知识库问答（L3 阈值命中直答，否则 L2 条文检索）")
+    p_ask.add_argument("query", nargs="?", default="", help="自然语言问题")
+    p_ask.add_argument("--kdir", default=None, help="知识库目录（默认 data/knowledge，缺省用包内空目录降级）")
+    p_ask.add_argument("--top", type=int, default=3, help="条文检索返回条数（默认 3）")
+    p_ask.set_defaults(func=cmd_ask)
 
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):

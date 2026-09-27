@@ -5,4 +5,4 @@
 与机器可读规则库做确定性合规校核，每条结论挂依据条款与原文证据。
 """
 __version__ = "0.1.0"
-__status__ = "skeleton"  # skeleton -> alpha -> ...
+__status__ = "m4"  # m1-skeleton -> m2-parse -> m3-e2e -> m4（知识库+LLM兜底+基准评测）

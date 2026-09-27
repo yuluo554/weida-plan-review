@@ -31,11 +31,17 @@
     },
     {
       "type": "low_freq",
-      "detail": "监测频率0.5次/d，低于示例下限1次/d",
+      "detail": "监测频率0.5次/d，低于下限1次/d与建议值2次/d",
       "expect": {
         "rule_id": "R-DP-031",
         "result": "fail"
-      }
+      },
+      "also_expect": [
+        {
+          "rule_id": "R-DP-061",
+          "result": "fail"
+        }
+      ]
     }
   ]
 }
