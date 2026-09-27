@@ -63,9 +63,7 @@ $ git -c http.proxy= -c https.proxy= push --force origin main
 
 （实际执行结果回填：见文末"执行记录回填"。）
 
-## 2. 发布门 ✅
-
-- **README 终版** ✅：简介/特性/mermaid 架构图/快速开始/评测表/目录/**限制（本次新增 6 条）**/
+## 2. 发布门 ✅- **README 终版** ✅：简介/特性/mermaid 架构图/快速开始/评测表/目录/**限制（本次新增 6 条）**/
   免责声明/已知环境问题/License 齐全；状态行与路线图更新为 M1–M6 收官。
 - **LICENSE** ✅：MIT（M1 起在库）。
 - **干净环境 clone → 一次成功** ✅（本机模拟：新目录 `D:\ProgramData\zcode\_m6_cleanenv`
@@ -109,10 +107,11 @@ $ git -c http.proxy= -c https.proxy= push --force origin main
 
 ## 6. 执行记录回填
 
-- 历史重写：`git filter-branch --tree-filter`（sed 替换 `C:SERS<USERNAME>` → `C:\Users\<username>`，
-  作用于 plan/*.md）执行成功；`git log --all -p | grep -c "Users\\<owner>"` = **0**（含全部历史）；
-  refs/original 已清 + `git gc --prune=now`。
+- 历史重写：`git filter-branch --tree-filter`（sed 将 `C:\Users\<机主名>` 前缀替换为
+  `C:\Users\<username>`，作用于 plan/*.md）执行成功；重写后全历史含机主用户名字面值的
+  匹配数 = **0**（`git log --all -p` 复核，含全部提交与文件）；refs/original 已清 +
+  `git gc --prune=now`。
 - force push：`git -c http.proxy= -c https.proxy= push --force origin main` 成功
   （代理连接失败时按 README 切直连）。
-- 推送后复核：GitHub 上 `git clone` 全新目录 → `git log --all -p | grep -c <owner>` = 0；
-  `py -m planguard demo` + 全量测试在新 clone 复跑通过。
+- 推送后复核：GitHub 上全新 clone → 全历史机主用户名字面值匹配数 = 0；
+  `py -m planguard demo` + 全量测试在新 clone 复跑通过（结果见下）。
