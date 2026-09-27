@@ -1,0 +1,33 @@
+{
+  "file": "fs_0008.docx",
+  "category": "formwork_support",
+  "seed": 2027,
+  "title": "高大模板支撑体系（高支模）专项施工方案（合成样例）",
+  "expected_cards": {
+    "fs.support.height": [
+      7.1,
+      7.8
+    ],
+    "fs.formwork.type": [
+      "扣件式"
+    ]
+  },
+  "injected": [
+    {
+      "type": "multi_height",
+      "detail": "方案7.1m 与计算书7.8m 两处搭设高度冲突",
+      "expect": {
+        "rule_id": "R-FS-012",
+        "result": "manual"
+      }
+    },
+    {
+      "type": "unit_error",
+      "detail": "立杆间距误写为110m（超物理范围，提取器应丢弃）",
+      "expect": {
+        "rule_id": "R-FS-003",
+        "result": "fail"
+      }
+    }
+  ]
+}

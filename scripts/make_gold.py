@@ -15,7 +15,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="危大方案配对真值数据生成器（合成样例）")
     parser.add_argument("--out", default="data/samples", help="样例输出目录")
     parser.add_argument("--gold", default="data/gold", help="真值输出目录")
-    parser.add_argument("--count", type=int, default=10, help="生成份数")
+    parser.add_argument("--count", type=int, default=30, help="深基坑生成份数")
+    parser.add_argument("--fs-count", type=int, default=10, help="高支模生成份数（M5）")
     parser.add_argument("--seed", type=int, default=2026, help="随机种子（保证可复现）")
     args = parser.parse_args(argv)
 
@@ -26,8 +27,12 @@ def main(argv=None) -> int:
 
     truths = generate(Path(args.out), Path(args.gold), count=args.count, seed=args.seed)
     n_inj = sum(len(t["injected"]) for t in truths)
-    print("已生成 %d 份样例（%s / %s），注入差异 %d 处，真值已写入 gold/。" %
-          (len(truths), args.out, args.gold, n_inj))
+    truths_fs = generate(Path(args.out), Path(args.gold), count=args.fs_count,
+                         seed=args.seed + 1, category="formwork_support")
+    n_inj += sum(len(t["injected"]) for t in truths_fs)
+    print("已生成 %d 份样例（深基坑 %d + 高支模 %d，%s / %s），注入差异 %d 处，真值已写入 gold/。"
+          % (len(truths) + len(truths_fs), len(truths), len(truths_fs),
+             args.out, args.gold, n_inj))
     print("验证: py -m planguard parse %s/gen_0001.docx" % args.out)
     return 0
 

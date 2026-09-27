@@ -1,0 +1,35 @@
+{
+  "file": "fs_0005.docx",
+  "category": "formwork_support",
+  "seed": 2027,
+  "title": "高大模板支撑体系（高支模）专项施工方案（合成样例）",
+  "expected_cards": {
+    "fs.support.height": [
+      8.5
+    ],
+    "fs.pole.spacing": [
+      0.9
+    ],
+    "fs.formwork.type": [
+      "门式"
+    ]
+  },
+  "injected": [
+    {
+      "type": "missing_section",
+      "detail": "缺少「应急处置措施」章节",
+      "expect": {
+        "rule_id": "R-FS-051",
+        "result": "fail"
+      }
+    },
+    {
+      "type": "over_height",
+      "detail": "搭设高度取8.5m，达到超过一定规模门槛8m且全文未体现专家论证",
+      "expect": {
+        "rule_id": "R-FS-101",
+        "result": "fail"
+      }
+    }
+  ]
+}

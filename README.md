@@ -4,7 +4,7 @@
 >
 > **规则优先 + LLM 兜底**：方案文档（docx/pdf）解析为结构化"参数卡"，与机器可读的规范规则库做确定性合规校核；每条结论挂依据条款与原文证据，多值冲突不硬判、输出"待人工确认"。
 
-🚧 **当前状态：M4 知识库 + LLM 兜底 + 基准评测完成（v0.1.0）** —— `check` 端到端审查、`ask` 条文问答、LLM 兜底抽取（防幻觉三件套）、两个基准脚本（零 API 可复现）；Web 面板按 [plan/05-里程碑.md](plan/05-里程碑.md) 推进（M5）。
+🚧 **当前状态：M5 Web 面板 + docx 报告 + 高支模类目扩展完成（v0.1.0）** —— `check` 端到端审查（md+docx 报告）、`ask` 条文问答、LLM 兜底抽取（防幻觉三件套）、Web 审查面板（断网可演示）、两个基准脚本（零 API 可复现）；下一步 M6 脱敏发布（见 [plan/05-里程碑.md](plan/05-里程碑.md)）。
 
 ## 为什么做
 
@@ -16,15 +16,15 @@
 | --- | --- |
 | 统一中间表示（参数卡：值·单位·文本取值·置信度·证据链） | ✅ 已实现 |
 | 规则引擎（required / threshold / within_range / enum / conditional_program / checklist_section，结论挂依据） | ✅ 全量可用 |
-| 内置规则库（深基坑 20 条：阈值/漏项/枚举/程序性/章节齐套，示例阈值标注待核对） | ✅ M3 |
+| 内置规则库（深基坑 20 + 高支模 10 条：阈值/漏项/枚举/程序性/章节齐套，示例阈值标注待核对） | ✅ M3/M5 |
 | docx/pdf 方案解析器 + 参数提取（别名归一/伪空格/超范围丢弃/页码证据） | ✅ 已实现 |
-| 端到端流水线 + Markdown 审查报告（三级结论/证据/建议/签署栏） | ✅ M3 |
-| 条文知识库三层（raw 来源登记 / 条文块 35 块 / 阈值表 25 条，全部标注待核对） | ✅ M4 |
+| 端到端流水线 + 审查报告（Markdown + 可归档 docx 含签署栏；三级结论/证据/建议） | ✅ M3/M5 |
+| 条文知识库三层（raw 来源登记 / 条文块 43 块 / 阈值表 41 条，全部标注待核对） | ✅ M4/M5 |
 | 条文问答 `ask`（L3 阈值表结构化命中直答，否则 L2 条文检索 top-k，零依赖中文检索） | ✅ M4 |
 | LLM 兜底抽取（防幻觉三件套：候选行压缩/摘录子串校验/范围校验；失败自动降级纯规则） | ✅ M4 |
-| 配对真值数据生成器（30 份合成样例 + 60 处注入差异 + also_expect 真值全集） | ✅ M2–M4 |
-| 内置基准评测（解析 F1=1.0 / 端到端检出率 100%·误报 0，零 API 可复现） | ✅ M4 |
-| Web 审查面板（上传 → 在线报告，断网可演示） | ⏳ M5 |
+| 配对真值数据生成器（40 份合成样例 = 深基坑30+高支模10，80 处注入差异 + also_expect 真值全集） | ✅ M2–M5 |
+| 内置基准评测（解析 F1=1.0 / 端到端检出率 100%·误报 0，零 API 可复现） | ✅ M4/M5 |
+| Web 审查面板（上传 → 流水线进度 → 在线三级结论报告 + 条文问答；FastAPI + 本地 vendor Vue3，断网可演示） | ✅ M5 |
 
 ## 架构
 
@@ -54,9 +54,14 @@ py -m planguard demo
 py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple python-docx
 py -m planguard parse data/samples/gen_0001.docx
 
-# 端到端审查：方案 → 20 条规则校核 → Markdown 报告
+# 端到端审查：方案 → 29 条规则校核 → Markdown + docx（可归档，含签署栏）报告
 py -m planguard check data/samples/gen_0001.docx --report output
 # 退出码: 0 通过/待确认；1 存在不合规
+
+# Web 审查面板（断网可演示：Vue3 为本地 vendor 文件，无 CDN）
+py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e ".[web]"
+py -X utf8 -m uvicorn planguard.web.app:create_app --factory --port 8000
+# 浏览器打开 http://127.0.0.1:8000 → 上传方案 → 在线三级结论报告 + 条文问答
 
 # LLM 兜底抽取（可选）：配置 .env（见 .env.example），规则提取未命中的参数
 # 由 LLM 兜底（摘录必须为原文子串，超范围丢弃，失败自动降级纯规则）
@@ -65,8 +70,8 @@ py -m planguard check data/samples/gen_0001.docx --report output --llm
 # 条文知识库问答：L3 阈值表命中直接回答，否则 L2 条文检索
 py -m planguard ask "基坑开挖深度超过多少需要专家论证"
 
-# 重新生成配对真值样例语料（可复现：固定 seed）
-py scripts/make_gold.py --count 30 --seed 2026
+# 重新生成配对真值样例语料（可复现：固定 seed；默认深基坑30 + 高支模10 = 40 份）
+py scripts/make_gold.py --count 30 --fs-count 10 --seed 2026
 
 # 内置基准评测（零 API）：解析 F1 / 端到端检出率·误报率 → 指标表
 py benchmarks/run_all.py
@@ -85,7 +90,7 @@ py -m unittest discover -v
 ├── plan/          # 计划文档（需求解读/架构/详设/数据/里程碑/交付对标）
 ├── data/          # 数据四目录 + 来源许可台账（samples/intermediate/knowledge/gold）
 ├── planguard/     # 主包（ir/parsers/extract/rules/knowledge/llm/report/web）
-├── tests/         # unittest 测试（66 项，全绿）
+├── tests/         # unittest 测试（81 项，全绿）
 ├── scripts/       # make_gold.py 配对真值数据生成器
 ├── benchmarks/    # 基准评测（eval_parse / eval_e2e / run_all，results.json）
 └── pyproject.toml # 依赖分层：parse / llm / web extras
@@ -97,12 +102,12 @@ py -m unittest discover -v
 
 | 基准 | 指标 | 结果 | 目标 |
 | --- | --- | --- | --- |
-| 参数解析（字段级，30 份生成样例） | P / R / F1 | 1.0000 / 1.0000 / **1.0000** | F1 ≥ 0.95 ✅ |
-| 端到端合规核查（60 处注入差异） | 检出率 / 强制误报 | 100.0%（60/60） / **0** | 100% / 0 ✅ |
+| 参数解析（字段级，40 份生成样例 = 深基坑30+高支模10） | P / R / F1 | 1.0000 / 1.0000 / **1.0000** | F1 ≥ 0.95 ✅ |
+| 端到端合规核查（80 处注入差异） | 检出率 / 强制误报 | 100.0%（80/80） / **0** | 100% / 0 ✅ |
 
 ## 路线图
 
-M1 计划+骨架 ✅ → M2 解析层+数据 ✅ → M3 规则全量+端到端 ✅ → M4 知识库+LLM+评测 ✅ → M5 Web+报告 → M6 脱敏发布。详见 [plan/05-里程碑.md](plan/05-里程碑.md)。
+M1 计划+骨架 ✅ → M2 解析层+数据 ✅ → M3 规则全量+端到端 ✅ → M4 知识库+LLM+评测 ✅ → M5 Web+报告+高支模 ✅ → M6 脱敏发布。详见 [plan/05-里程碑.md](plan/05-里程碑.md)。
 
 ## 免责声明
 

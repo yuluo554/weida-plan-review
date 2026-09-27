@@ -205,7 +205,8 @@ class TestEndToEndInjection(unittest.TestCase):
             self.assertTrue(report.exists())
             text = report.read_text(encoding="utf-8")
             self.assertIn("总体结论", text)
-            self.assertEqual(trace.stages[-1].name, "report")
+            self.assertEqual(trace.stages[-1].name, "report_docx")  # M5：末尾追加 docx 报告阶段
+            self.assertIn("report", [st.name for st in trace.stages])
 
 
 if __name__ == "__main__":

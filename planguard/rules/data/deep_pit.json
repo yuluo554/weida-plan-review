@@ -5,6 +5,7 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.support_type",
+    "only_if_text": ["基坑"],
     "basis": "建办质〔2018〕31号：专项施工方案应包含施工工艺技术（支护形式）（条文编号待核对）",
     "level": "强制",
     "severity": "error",
@@ -18,6 +19,7 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.safety_grade",
+    "only_if_text": ["基坑"],
     "basis": "JGJ 120-2012：基坑支护设计应明确侧壁安全等级（条文编号待核对）",
     "level": "强制",
     "severity": "error",
@@ -31,6 +33,7 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.retaining.displacement",
+    "only_if_text": ["基坑"],
     "basis": "GB 50497-2019：基坑监测应明确位移报警/控制值（条文编号待核对）",
     "level": "强制",
     "severity": "error",
@@ -44,6 +47,7 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.monitoring.frequency",
+    "only_if_text": ["基坑"],
     "basis": "GB 50497-2019：监测方案应明确监测频率（条文编号待核对）",
     "level": "强制",
     "severity": "error",
@@ -102,6 +106,7 @@
     "category": "deep_pit",
     "check_type": "checklist_section",
     "param": "doc.sections",
+    "only_if_text": ["基坑"],
     "sections": [
       {"title": "工程概况", "keywords": ["工程概况"]},
       {"title": "编制依据", "keywords": ["编制依据"]},
@@ -126,6 +131,7 @@
     "category": "deep_pit",
     "check_type": "checklist_section",
     "param": "doc.sections",
+    "only_if_text": ["基坑"],
     "sections": [
       {"title": "监测方案", "keywords": ["监测方案", "监测"]}
     ],
