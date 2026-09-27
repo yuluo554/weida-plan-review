@@ -40,6 +40,10 @@ PARAM_META: Dict[str, Dict[str, Any]] = {
         "name": "高支模支撑体系搭设高度", "unit_re": r"(?:mm|m|米)",
         "bounds": (0.0, 100.0), "category": "formwork_support",
     },
+    "fs.pole.spacing": {
+        "name": "高支模立杆间距", "unit_re": r"(?:mm|m|米)",
+        "bounds": (0.0, 3.0), "category": "formwork_support",
+    },
 }
 
 UNIT_CANON = {"米": "m", "毫米": "mm", "次/天": "次/d", "次/日": "次/d", "次每日": "次/d", "次每天": "次/d"}
@@ -53,6 +57,10 @@ TEXT_PARAMS: Dict[str, Dict[str, Any]] = {
     "dp.safety_grade": {
         "name": "基坑侧壁安全等级", "category": "deep_pit",
         "patterns": [r"安全等级为([一二三]级)"],
+    },
+    "fs.formwork.type": {
+        "name": "模板支撑体系类型", "category": "formwork_support",
+        "patterns": [r"支撑体系采用(.{2,8}?)钢管"],
     },
 }
 
@@ -139,7 +147,8 @@ def extract_cards(result: ParseResult) -> Tuple[List[ParameterCard], Dict[str, A
                         continue
                     value = float(m.group(1))
                     unit = UNIT_CANON.get(m.group(2), m.group(2))
-                    if unit == "mm" and param_id in ("dp.excavation_depth", "fs.support.height"):
+                    if unit == "mm" and param_id in ("dp.excavation_depth",
+                                                     "fs.support.height", "fs.pole.spacing"):
                         value, unit = value / 1000.0, "m"  # mm 书写的长度换算为 m
                     key = (param_id, value, line_no, m.start())
                     if key in seen:

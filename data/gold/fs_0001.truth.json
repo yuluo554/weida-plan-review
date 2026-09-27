@@ -1,0 +1,35 @@
+{
+  "file": "fs_0001.docx",
+  "category": "formwork_support",
+  "seed": 2027,
+  "title": "高大模板支撑体系（高支模）专项施工方案（合成样例）",
+  "expected_cards": {
+    "fs.support.height": [
+      8.5
+    ],
+    "fs.pole.spacing": [
+      1.5
+    ],
+    "fs.formwork.type": [
+      "扣件式"
+    ]
+  },
+  "injected": [
+    {
+      "type": "over_height",
+      "detail": "搭设高度取8.5m，达到超过一定规模门槛8m且全文未体现专家论证",
+      "expect": {
+        "rule_id": "R-FS-101",
+        "result": "fail"
+      }
+    },
+    {
+      "type": "low_spacing",
+      "detail": "立杆间距1.5m，超过示例上限1.2m",
+      "expect": {
+        "rule_id": "R-FS-031",
+        "result": "fail"
+      }
+    }
+  ]
+}

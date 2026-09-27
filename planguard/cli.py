@@ -22,14 +22,14 @@ from .rules.engine import DEFAULT_RULES_DIR, RuleEngine, load_rules
 MODULE_STATUS = [
     ("已就绪", "ir/schema       统一中间表示（参数卡/证据/结论，含文本型取值）"),
     ("全量可用", "rules/engine    规则引擎（required/threshold/within_range/enum/conditional/checklist）"),
-    ("20 条", "rules/data      规则库（深基坑，全部标注待核对的示例阈值）"),
+    ("29 条", "rules/data      规则库（深基坑 20 + 高支模 10，示例阈值标注待核对）"),
     ("已实现", "parsers/docx    docx 方案解析器"),
     ("已实现", "parsers/pdf     文本型 pdf 解析器"),
     ("M3 已接通", "orchestrator    端到端流水线编排"),
-    ("M3 Markdown", "report          审查报告导出（docx → M5）"),
-    ("M4 已实现", "knowledge       条文知识库与检索问答（ask 命令）"),
+    ("M3/M5", "report          审查报告导出（Markdown + 可归档 docx，含签署栏）"),
+    ("M4/M5", "knowledge       条文知识库与检索问答（ask 命令；深基坑+高支模）"),
     ("M4 已实现", "llm             LLM 兜底抽取（防幻觉三件套，check --llm）"),
-    ("M5 计划", "web             Web 审查面板"),
+    ("M5 已实现", "web             Web 审查面板（FastAPI + 本地 vendor Vue3，断网可演示）"),
 ]
 
 RESULT_LABEL = {"fail": "不合规", "manual": "待确认", "pass": "通过  "}

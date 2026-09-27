@@ -137,9 +137,16 @@ def run(doc_path, out_dir=None, rules_dir=None, use_llm=False) -> Tuple[ReviewRe
     result = _stage("check", _check)
 
     if out_dir is not None:
-        from .report.exporter import export_markdown
+        from .report.exporter import export_docx, export_markdown
         out_dir = Path(out_dir)
-        report_path = out_dir / (Path(parsed.doc_name).stem + ".审查报告.md")
+        stem = Path(parsed.doc_name).stem
+        report_path = out_dir / (stem + ".审查报告.md")
         _stage("report", export_markdown, result, report_path)
         result.meta["report"] = str(report_path)
+        try:
+            docx_path = out_dir / (stem + ".审查报告.docx")
+            _stage("report_docx", export_docx, result, docx_path)
+            result.meta["report_docx"] = str(docx_path)
+        except RuntimeError as exc:  # python-docx 未安装：Markdown 报告照常，docx 缺席可读提示
+            result.meta["report_docx_error"] = str(exc)
     return result, trace

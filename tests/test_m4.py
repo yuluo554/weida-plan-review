@@ -283,7 +283,7 @@ class TestBenchmarkSmoke(unittest.TestCase):
             res = eval_parse.evaluate(DEFAULT_SAMPLES_DIR, DEFAULT_GOLD_DIR,
                                       diag_path=Path(tmp) / "diag.jsonl")
         self.assertGreaterEqual(res["f1"], 0.95)
-        self.assertEqual(res["docs_total"], 30)
+        self.assertEqual(res["docs_total"], 40)  # M5：深基坑30 + 高支模10
 
     def test_e2e_benchmark(self):
         with tempfile.TemporaryDirectory() as tmp:

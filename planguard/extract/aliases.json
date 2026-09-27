@@ -2,5 +2,6 @@
   "dp.excavation_depth": ["开挖深度", "基坑深度", "挖深"],
   "dp.retaining.displacement": ["水平位移控制值", "位移控制值", "水平位移报警值", "位移报警值"],
   "dp.monitoring.frequency": ["监测频率", "监测频次"],
-  "fs.support.height": ["支撑体系搭设高度", "搭设高度", "支撑高度", "支模高度"]
+  "fs.support.height": ["支撑体系搭设高度", "搭设高度", "支撑高度", "支模高度"],
+  "fs.pole.spacing": ["立杆间距", "立杆纵距", "立杆横距"]
 }

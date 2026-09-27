@@ -29,15 +29,15 @@ def main(argv=None) -> int:
     rows = [
         "| 基准 | 指标 | 结果 | 目标 | 达标 |",
         "| --- | --- | --- | --- | --- |",
-        "| 参数解析（字段级，30 份生成样例） | P / R / F1 | %.4f / %.4f / **%.4f** | F1 ≥ 0.95 | %s |"
+        "| 参数解析（字段级，40 份生成样例） | P / R / F1 | %.4f / %.4f / **%.4f** | F1 ≥ 0.95 | %s |"
         % (parse_res["precision"], parse_res["recall"], parse_res["f1"],
            "✅" if parse_res["f1"] >= 0.95 else "❌"),
-        "| 端到端合规核查（60 处注入差异） | 检出率 / 强制误报 | %.1f%%（%d/%d） / **%d** | 100%% / 0 | %s |"
-        % (e2e_res["detection_rate"] * 100, e2e_res["hits"], e2e_res["injected_total"],
-           e2e_res["forced_fp"],
+        "| 端到端合规核查（%d 处注入差异） | 检出率 / 强制误报 | %.1f%%（%d/%d） / **%d** | 100%% / 0 | %s |"
+        % (e2e_res["injected_total"], e2e_res["detection_rate"] * 100, e2e_res["hits"],
+           e2e_res["injected_total"], e2e_res["forced_fp"],
            "✅" if e2e_res["detection_rate"] == 1.0 and e2e_res["forced_fp"] == 0 else "❌"),
     ]
-    print("## PlanGuard 基准评测（零 API，seed=2026 可复现，%d 份深基坑合成样例）\n" % parse_res["docs_total"])
+    print("## PlanGuard 基准评测（零 API，seed=2026 可复现，深基坑30+高支模10 份合成样例）\n")
     print("\n".join(rows))
     print("\n评测耗时 %.1fs。复现方式见 benchmarks/README.md；最近结果已写入 benchmarks/results.json。"
           % (time.perf_counter() - started))

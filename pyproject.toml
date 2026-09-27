@@ -23,7 +23,7 @@ dependencies = []
 parse = ["python-docx>=0.8.11", "pdfplumber>=0.10"]
 llm = ["openai>=1.30"]
 web = ["fastapi>=0.100", "uvicorn>=0.23"]
-dev = ["pytest", "reportlab<4"]  # reportlab 仅测试用（生成中文 PDF 样例）；<4 规避 py3.8 的 md5 兼容问题
+dev = ["pytest", "reportlab<4", "httpx<0.28"]  # reportlab 仅测试用（生成中文 PDF 样例）；httpx 供 FastAPI TestClient
 
 [project.scripts]
 planguard = "planguard.cli:main"

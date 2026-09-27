@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanGuard 方案卫士 · 审查面板</title>
+<script src="/vendor/vue.global.prod.js"></script>
+<style>
+  :root { --ink:#1f2d3d; --brand:#2563eb; --ok:#16a34a; --warn:#d97706; --bad:#dc2626; --line:#e5e7eb; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei",system-ui,sans-serif; color:var(--ink); background:#f3f5f9; }
+  header { background:#0f2540; color:#fff; padding:18px 28px; }
+  header h1 { margin:0; font-size:20px; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.75; }
+  main { max-width:1080px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:20px 24px; margin-bottom:20px; }
+  h2 { font-size:16px; margin:0 0 14px; border-left:4px solid var(--brand); padding-left:10px; }
+  .drop { border:2px dashed #b7c3d6; border-radius:10px; padding:34px; text-align:center; color:#5b6b7f; cursor:pointer; transition:.15s; }
+  .drop:hover,.drop.on { border-color:var(--brand); background:#f0f6ff; }
+  .drop input { display:none; }
+  .btn { display:inline-block; background:var(--brand); color:#fff; border:0; border-radius:8px; padding:9px 22px; font-size:14px; cursor:pointer; }
+  .btn:disabled { background:#9db7e8; cursor:not-allowed; }
+  .stages { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .stage { font-size:12px; background:#eef2f8; border-radius:6px; padding:5px 10px; color:#44586f; }
+  .stage b { color:var(--brand); }
+  .overall { font-size:17px; font-weight:bold; padding:12px 16px; border-radius:8px; margin-bottom:14px; }
+  .overall.fail { background:#fdecec; color:var(--bad); }
+  .overall.manual { background:#fdf3e2; color:var(--warn); }
+  .overall.pass { background:#e9f7ee; color:var(--ok); }
+  .counts { display:flex; gap:14px; font-size:13px; margin-bottom:14px; }
+  .counts span b { font-size:20px; margin-right:3px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#f6f8fb; white-space:nowrap; }
+  .tag { display:inline-block; font-size:12px; border-radius:5px; padding:2px 8px; color:#fff; }
+  .tag.fail { background:var(--bad); } .tag.manual { background:var(--warn); } .tag.pass { background:var(--ok); }
+  .ask-row { display:flex; gap:10px; }
+  .ask-row input { flex:1; border:1px solid #cbd5e1; border-radius:8px; padding:9px 12px; font-size:14px; }
+  .answer { background:#f8fafc; border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-top:12px; white-space:pre-wrap; font-size:13px; line-height:1.7; }
+  .muted { color:#7b8794; font-size:12px; margin-top:10px; }
+  .err { color:var(--bad); font-size:13px; margin-top:10px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>PlanGuard 方案卫士 · 危大工程专项方案智能审查</h1>
+    <p>规则优先 + LLM 兜底 · 每条结论挂依据条款与原文证据 · 本页面完全离线可用（Vue3 为本地 vendor 文件）</p>
+  </header>
+  <main>
+    <div class="card">
+      <h2>① 上传专项施工方案（docx / pdf）</h2>
+      <div class="drop" :class="{on:dragging}" @click="$refs.file.click()"
+           @dragover.prevent="dragging=true" @dragleave.prevent="dragging=false" @drop.prevent="onDrop">
+        <template v-if="!file">点击选择或拖入文件（将依次执行 解析 → 提取 → 规则核查 → 报告）</template>
+        <template v-else>已选择：<b>{{ file.name }}</b>（{{ (file.size/1024).toFixed(0) }} KB）</template>
+        <input ref="file" type="file" accept=".docx,.pdf" @change="e => pick(e.target.files[0])">
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn" :disabled="!file || busy" @click="review">{{ busy ? "审查中…" : "开始审查" }}</button>
+      </div>
+      <div class="stages" v-if="stages.length">
+        <span class="stage" v-for="st in stages" :key="st.name">{{ st.name }} · <b>{{ st.seconds }}s</b></span>
+      </div>
+      <p class="err" v-if="error">{{ error }}</p>
+    </div>
+
+    <div class="card" v-if="report">
+      <h2>② 审查结论：{{ report.doc }}</h2>
+      <div class="overall" :class="worst">
+        {{ report.overall }}
+      </div>
+      <div class="counts">
+        <span><b style="color:var(--bad)">{{ report.summary.fail }}</b>不合规</span>
+        <span><b style="color:var(--warn)">{{ report.summary.manual }}</b>待人工确认</span>
+        <span><b style="color:var(--ok)">{{ report.summary.pass }}</b>通过</span>
+        <span class="muted" style="margin-left:auto">规则库 {{ report.rules_total }} 条</span>
+      </div>
+      <table>
+        <thead><tr><th>规则</th><th>级别</th><th>结论</th><th>说明</th><th>依据条款</th><th>整改建议</th><th>原文证据</th></tr></thead>
+        <tbody>
+          <tr v-for="f in report.findings" :key="f.rule_id + f.result">
+            <td>{{ f.rule_id }}<br><span class="muted">{{ f.rule_name }}</span></td>
+            <td>{{ f.level }}</td>
+            <td><span class="tag" :class="f.result">{{ f.result_label }}</span></td>
+            <td>{{ f.detail || "-" }}</td>
+            <td>{{ f.basis || "-" }}</td>
+            <td>{{ f.advice || "-" }}</td>
+            <td>{{ f.evidence || "-" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" v-if="report">
+      <h2>③ 提取到的参数卡（{{ report.cards.length }} 张）</h2>
+      <table>
+        <thead><tr><th>参数</th><th>取值</th><th>出处章节</th><th>原文</th></tr></thead>
+        <tbody>
+          <tr v-for="(c,i) in report.cards" :key="i">
+            <td>{{ c.param_id }}<br><span class="muted">{{ c.name }}</span></td>
+            <td>{{ c.value }} {{ c.unit }}</td>
+            <td>{{ c.section || "-" }}</td>
+            <td>{{ c.line || "-" }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted" v-if="report.discarded.length">另有 {{ report.discarded.length }} 处超出物理合理范围的可疑取值已丢弃并记录（防解析错抽）。</p>
+    </div>
+
+    <div class="card">
+      <h2>④ 条文知识库问答</h2>
+      <div class="ask-row">
+        <input v-model.trim="question" placeholder="例如：高支模搭设高度超过多少需要专家论证" @keyup.enter="ask">
+        <button class="btn" :disabled="asking" @click="ask">{{ asking ? "检索中…" : "提问" }}</button>
+      </div>
+      <div class="answer" v-if="answer">{{ answer }}</div>
+      <p class="err" v-if="askError">{{ askError }}</p>
+      <p class="muted">知识库条目均为整理值并标注"待核对"，以官方现行文本为准。</p>
+    </div>
+  </main>
+</div>
+<script>
+const { createApp, ref } = Vue;
+createApp({
+  setup() {
+    const file = ref(null), busy = ref(false), error = ref("");
+    const report = ref(null), stages = ref([]);
+    const dragging = ref(false);
+    const question = ref(""), answer = ref(""), asking = ref(false), askError = ref("");
+
+    const pick = (f) => { if (f) { file.value = f; error.value = ""; } };
+    const onDrop = (e) => { dragging.value = false; pick(e.dataTransfer.files[0]); };
+
+    const review = async () => {
+      if (!file.value) return;
+      busy.value = true; error.value = ""; report.value = null; stages.value = [];
+      const fd = new FormData();
+      fd.append("file", file.value);
+      try {
+        const res = await fetch("/api/review", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "审查失败");
+        report.value = data;
+        stages.value = data.stages || [];
+      } catch (e) { error.value = String(e.message || e); }
+      busy.value = false;
+    };
+
+    const ask = async () => {
+      if (!question.value) return;
+      asking.value = true; answer.value = ""; askError.value = "";
+      try {
+        const res = await fetch("/api/ask", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: question.value }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "查询失败");
+        answer.value = data.answer;
+      } catch (e) { askError.value = String(e.message || e); }
+      asking.value = false;
+    };
+
+    return { file, busy, error, report, stages, dragging, question, answer, asking, askError,
+             pick, onDrop, review, ask };
+  },
+  computed: {
+    worst() {
+      const s = this.report && this.report.summary;
+      return !s ? "" : (s.fail ? "fail" : (s.manual ? "manual" : "pass"));
+    },
+  },
+}).mount("#app");
+</script>
+</body>
+</html>

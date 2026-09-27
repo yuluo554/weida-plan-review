@@ -5,6 +5,7 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.excavation_depth",
+    "only_if_text": ["基坑"],
     "basis": "建办质〔2018〕31号：专项施工方案应包含工程概况及关键参数（条文编号待核对）",
     "level": "强制",
     "severity": "error",

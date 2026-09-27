@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-27 09:15:29",
+  "generated_at": "2026-09-27 10:59:52",
   "eval_parse": {
     "precision": 1.0,
     "recall": 1.0,
     "f1": 1.0,
-    "tp": 150,
+    "tp": 180,
     "fp": 0,
     "fn": 0,
     "docs_bad": [],
-    "docs_total": 30
+    "docs_total": 40
   },
   "eval_parse_per_param": {
     "dp.excavation_depth": {
@@ -50,12 +50,36 @@
       "tp": 30,
       "fp": 0,
       "fn": 0
+    },
+    "fs.formwork.type": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0
+    },
+    "fs.pole.spacing": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0
+    },
+    "fs.support.height": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 14,
+      "fp": 0,
+      "fn": 0
     }
   },
   "eval_e2e": {
-    "docs_total": 30,
-    "injected_total": 60,
-    "hits": 60,
+    "docs_total": 40,
+    "injected_total": 80,
+    "hits": 80,
     "detection_rate": 1.0,
     "forced_fp": 0,
     "by_type": {
@@ -63,21 +87,33 @@
         "total": 12,
         "hit": 12
       },
+      "low_spacing": {
+        "total": 4,
+        "hit": 4
+      },
       "missing_section": {
-        "total": 12,
-        "hit": 12
+        "total": 16,
+        "hit": 16
       },
       "multi_disp": {
         "total": 12,
         "hit": 12
       },
+      "multi_height": {
+        "total": 4,
+        "hit": 4
+      },
       "over_disp": {
         "total": 12,
         "hit": 12
       },
+      "over_height": {
+        "total": 4,
+        "hit": 4
+      },
       "unit_error": {
-        "total": 12,
-        "hit": 12
+        "total": 16,
+        "hit": 16
       }
     }
   }

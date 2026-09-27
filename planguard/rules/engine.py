@@ -132,6 +132,11 @@ class RuleEngine:
             by_param.setdefault(card.param_id, []).append(card)
         for rule in self.rules:
             ct = rule.check_type
+            if rule.only_if_text and doc is not None:
+                # 类目门控：全文不含关键词 → 本文档不适用该规则（如深基坑方案不查高支模参数）。
+                # 对全部 check_type 生效（含 conditional_program / checklist_section）。
+                if not any(k in (line.text or "") for k in rule.only_if_text for line in doc.lines):
+                    continue
             if ct in DOC_REQUIRED:
                 if doc is None:
                     skipped.append(rule)
@@ -143,10 +148,6 @@ class RuleEngine:
             if ct not in SUPPORTED:
                 skipped.append(rule)
                 continue
-            if rule.only_if_text and doc is not None:
-                # 类目门控：全文不含关键词 → 本文档不适用该规则（如深基坑方案不查高支模参数）
-                if not any(k in (line.text or "") for k in rule.only_if_text for line in doc.lines):
-                    continue
             group = by_param.get(rule.param, [])
             if ct == "required":
                 findings.append(self._check_required(rule, group))
