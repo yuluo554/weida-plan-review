@@ -24,11 +24,17 @@
   "injected": [
     {
       "type": "low_freq",
-      "detail": "监测频率0.5次/d，低于示例下限1次/d",
+      "detail": "监测频率0.5次/d，低于下限1次/d与建议值2次/d",
       "expect": {
         "rule_id": "R-DP-031",
         "result": "fail"
-      }
+      },
+      "also_expect": [
+        {
+          "rule_id": "R-DP-061",
+          "result": "fail"
+        }
+      ]
     },
     {
       "type": "multi_disp",
@@ -36,7 +42,21 @@
       "expect": {
         "rule_id": "R-DP-021",
         "result": "manual"
-      }
+      },
+      "also_expect": [
+        {
+          "rule_id": "R-DP-022",
+          "result": "manual"
+        },
+        {
+          "rule_id": "R-DP-062",
+          "result": "manual"
+        },
+        {
+          "rule_id": "R-DP-073",
+          "result": "manual"
+        }
+      ]
     }
   ]
 }

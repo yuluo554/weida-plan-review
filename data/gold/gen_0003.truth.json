@@ -9,7 +9,7 @@
       30.0
     ],
     "dp.monitoring.frequency": [
-      1.0
+      2.0
     ],
     "dp.support_type": [
       "地下连续墙+内支撑"
@@ -25,7 +25,21 @@
       "expect": {
         "rule_id": "R-DP-021",
         "result": "manual"
-      }
+      },
+      "also_expect": [
+        {
+          "rule_id": "R-DP-022",
+          "result": "manual"
+        },
+        {
+          "rule_id": "R-DP-062",
+          "result": "manual"
+        },
+        {
+          "rule_id": "R-DP-073",
+          "result": "manual"
+        }
+      ]
     },
     {
       "type": "unit_error",

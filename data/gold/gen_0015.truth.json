@@ -1,0 +1,42 @@
+{
+  "file": "gen_0015.docx",
+  "category": "deep_pit",
+  "seed": 2026,
+  "title": "深基坑土方开挖及支护专项施工方案（合成样例）",
+  "expected_cards": {
+    "dp.excavation_depth": [
+      5.0
+    ],
+    "dp.retaining.displacement": [
+      35.0
+    ],
+    "dp.monitoring.frequency": [
+      2.0
+    ],
+    "dp.support_type": [
+      "放坡+土钉墙"
+    ],
+    "dp.safety_grade": [
+      "二级"
+    ]
+  },
+  "injected": [
+    {
+      "type": "missing_section",
+      "detail": "缺少「应急处置措施」章节",
+      "expect": {
+        "rule_id": "R-DP-051",
+        "result": "fail",
+        "since": "M3"
+      }
+    },
+    {
+      "type": "over_disp",
+      "detail": "位移控制值取35mm，超过示例上限30mm",
+      "expect": {
+        "rule_id": "R-DP-021",
+        "result": "fail"
+      }
+    }
+  ]
+}

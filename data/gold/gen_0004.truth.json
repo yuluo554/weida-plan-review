@@ -8,7 +8,7 @@
       28.0
     ],
     "dp.monitoring.frequency": [
-      1.0
+      2.0
     ],
     "dp.support_type": [
       "地下连续墙+内支撑"
@@ -30,7 +30,7 @@
       "type": "missing_section",
       "detail": "缺少「应急处置措施」章节",
       "expect": {
-        "checklist": "应急处置措施",
+        "rule_id": "R-DP-051",
         "result": "fail",
         "since": "M3"
       }

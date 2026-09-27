@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-09-27 09:15:29",
+  "eval_parse": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 150,
+    "fp": 0,
+    "fn": 0,
+    "docs_bad": [],
+    "docs_total": 30
+  },
+  "eval_parse_per_param": {
+    "dp.excavation_depth": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 18,
+      "fp": 0,
+      "fn": 0
+    },
+    "dp.monitoring.frequency": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 30,
+      "fp": 0,
+      "fn": 0
+    },
+    "dp.retaining.displacement": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 42,
+      "fp": 0,
+      "fn": 0
+    },
+    "dp.safety_grade": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 30,
+      "fp": 0,
+      "fn": 0
+    },
+    "dp.support_type": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 30,
+      "fp": 0,
+      "fn": 0
+    }
+  },
+  "eval_e2e": {
+    "docs_total": 30,
+    "injected_total": 60,
+    "hits": 60,
+    "detection_rate": 1.0,
+    "forced_fp": 0,
+    "by_type": {
+      "low_freq": {
+        "total": 12,
+        "hit": 12
+      },
+      "missing_section": {
+        "total": 12,
+        "hit": 12
+      },
+      "multi_disp": {
+        "total": 12,
+        "hit": 12
+      },
+      "over_disp": {
+        "total": 12,
+        "hit": 12
+      },
+      "unit_error": {
+        "total": 12,
+        "hit": 12
+      }
+    }
+  }
+}

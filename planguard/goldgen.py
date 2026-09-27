@@ -4,12 +4,15 @@
 程序化生成深基坑专项施工方案 docx（合成样例，不含真实项目信息）+ truth.json
 （参数真值 + 注入差异清单），用于解析 F1 与端到端校核基准——评测零 API 依赖可重复。
 
-注入差异类型（每份 1–2 类，count 份内轮转保证每类充分出现）：
+注入差异类型（每份 1–2 类，count 份内轮转保证每类充分出现）。
+基准不变量：自然参数不触发任何非 pass 结论；每处注入在 expect 记录主期望、
+在 also_expect 记录同一注入隐含的其余非 pass 结论（真值=该文档全部非 pass 集合）：
 - over_disp       位移控制值取 35mm（>30mm 示例上限）      → 期望 R-DP-021 fail
-- low_freq        监测频率 0.5 次/d（<1 示例下限）          → 期望 R-DP-031 fail
-- multi_disp      计算书与监测方案给出两个不同位移控制值     → 期望 R-DP-021 manual
-- unit_error      开挖深度写成 54.0m（超物理范围，应丢弃）    → 期望 R-DP-001 fail
-- missing_section 缺"应急处置措施"章节                      → 期望章节完备性检查 fail（M3 启用）
+- low_freq        监测频率 0.5 次/d（<1 下限、<2 建议值）    → 期望 R-DP-031 fail、R-DP-061 fail
+- multi_disp      计算书与监测方案给出两个不同位移控制值     → 多值冲突：该参数全部规则
+                    （R-DP-021/022/062/073）均输出 manual
+- unit_error      开挖深度放大 100 倍（超物理范围，应丢弃）   → 期望 R-DP-001 fail
+- missing_section 缺"应急处置措施"章节                      → 期望 R-DP-051（章节齐套）fail
 """
 import json
 import random
@@ -26,7 +29,7 @@ def make_spec(rng: random.Random, idx: int, injections: List[str]) -> Dict[str, 
     """随机抽参数 + 应用注入差异，返回文档内容与真值 spec。"""
     depth = round(rng.uniform(4.0, 9.0), 1)               # m
     disp = int(rng.uniform(20, 29))                        # mm（自然范围内不触发示例阈值30）
-    freq = rng.choice([1.0, 1.0, 2.0])                     # 次/d（自然范围内不触发示例下限1）
+    freq = rng.choice([2.0, 2.0, 2.5])                     # 次/d（≥2，自然通过 R-DP-031/R-DP-061）
     support = rng.choice(SUPPORT_TYPES)
     sections: List[Tuple[str, List[str]]] = [
         ("一、工程概况", [
@@ -61,7 +64,8 @@ def make_spec(rng: random.Random, idx: int, injections: List[str]) -> Dict[str, 
         ]),
         ("七、验收要求", [
             "支护结构验收执行JGJ 120-2012相关规定，验收合格后方可进入下道工序。",
-        ]),
+        ] + (["本工程基坑属超过一定规模的危大工程，已按规定组织专家论证，论证意见已落实。"]
+             if depth >= 5 else [])),
         ("八、应急处置措施", [
             "编制应急预案，配备应急物资，定期组织演练。",
         ]),
@@ -99,15 +103,21 @@ def make_spec(rng: random.Random, idx: int, injections: List[str]) -> Dict[str, 
             _paras("五、")[4] = "开挖至坑底期间，监测频率为0.5次/d。"
             expected["dp.monitoring.frequency"] = [0.5]
             injected.append({"type": kind,
-                             "detail": "监测频率0.5次/d，低于示例下限1次/d",
-                             "expect": {"rule_id": "R-DP-031", "result": "fail"}})
+                             "detail": "监测频率0.5次/d，低于下限1次/d与建议值2次/d",
+                             "expect": {"rule_id": "R-DP-031", "result": "fail"},
+                             "also_expect": [{"rule_id": "R-DP-061", "result": "fail"}]})
         elif kind == "multi_disp":
             disp2 = disp + 5
             _paras("九、").append("计算书中支护结构顶部水平位移控制值取%dmm。" % disp2)
             expected["dp.retaining.displacement"] = sorted({float(disp), float(disp2)})
             injected.append({"type": kind,
                              "detail": "监测方案%imm 与计算书%imm 两处位移控制值冲突" % (disp, disp2),
-                             "expect": {"rule_id": "R-DP-021", "result": "manual"}})
+                             "expect": {"rule_id": "R-DP-021", "result": "manual"},
+                             "also_expect": [
+                                 {"rule_id": "R-DP-022", "result": "manual"},
+                                 {"rule_id": "R-DP-062", "result": "manual"},
+                                 {"rule_id": "R-DP-073", "result": "manual"},
+                             ]})
         elif kind == "unit_error":
             _paras("一、")[1] = "基坑开挖深度为%gm，基坑侧壁安全等级为二级。" % (depth * 100)
             expected.pop("dp.excavation_depth", None)  # 超物理范围应被丢弃 → 无该参数卡
@@ -118,7 +128,7 @@ def make_spec(rng: random.Random, idx: int, injections: List[str]) -> Dict[str, 
             sections = [s for s in sections if s[0] != "八、应急处置措施"]
             injected.append({"type": kind,
                              "detail": "缺少「应急处置措施」章节",
-                             "expect": {"checklist": "应急处置措施", "result": "fail", "since": "M3"}})
+                             "expect": {"rule_id": "R-DP-051", "result": "fail", "since": "M3"}})
     return {
         "idx": idx, "title": DOC_TITLE, "sections": sections,
         "expected_cards": expected, "injected": injected,

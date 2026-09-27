@@ -8,7 +8,7 @@
       26.0
     ],
     "dp.monitoring.frequency": [
-      2.0
+      2.5
     ],
     "dp.support_type": [
       "钢板桩+内支撑"
@@ -30,7 +30,7 @@
       "type": "missing_section",
       "detail": "缺少「应急处置措施」章节",
       "expect": {
-        "checklist": "应急处置措施",
+        "rule_id": "R-DP-051",
         "result": "fail",
         "since": "M3"
       }
