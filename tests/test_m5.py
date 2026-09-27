@@ -202,6 +202,16 @@ class TestWebPanel(unittest.TestCase):
         self.assertEqual(r2.status_code, 400)
 
 
+class TestWebExtras(unittest.TestCase):
+    """发布门回归：web extras 必须声明 python-multipart——File 上传路由在注册期就需要它，
+    缺失时 uvicorn 启动即崩（M6 干净环境实测，M5 冒烟因跑在带此包的系统 Python 未暴露）。"""
+
+    def test_pyproject_declares_multipart(self):
+        text = (REPO / "pyproject.toml").read_text(encoding="utf-8")
+        web_line = next(ln for ln in text.splitlines() if ln.strip().startswith("web ="))
+        self.assertIn("python-multipart", web_line)
+
+
 class TestKnowledgeFS(unittest.TestCase):
     """知识库扩量：高支模阈值表 ≥15 条、JGJ 162 条文块入库，全部待核对。"""
 
