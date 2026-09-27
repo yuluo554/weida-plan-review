@@ -51,7 +51,7 @@
 ## 本机环境坑（重要，全部实测）
 
 1. **Python 写 `__pycache__` 偶发损坏** → 一律 `PYTHONDONTWRITEBYTECODE=1`；怪错/随机 FAIL 先清
-   `__pycache__`（含 `C:SERS<USERNAME>\AppData\Local\Programs\Python\Python38\lib\__pycache__`）再重跑；
+   `__pycache__`（含 `C:\Users\<username>\AppData\Local\Programs\Python\Python38\lib\__pycache__`）再重跑；
    偶发崩溃直接重试（M5 实测三轮里第 3 轮随机错一次，重跑即恢复）。
 2. **pip 被注册表系统代理污染**（错误的 `https://127.0.0.1:7897`）→
    `NO_PROXY="*" no_proxy="*" py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <pkg>`。

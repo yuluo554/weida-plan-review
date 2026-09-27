@@ -48,7 +48,7 @@
 
 1. **Python 写 `__pycache__` 偶发损坏** → 随机 `SystemError: unknown opcode`、段错误(139)、测试数波动。
    运行/测试一律加 `PYTHONDONTWRITEBYTECODE=1`；出怪错先清 `__pycache__`
-   （含 `C:SERS<USERNAME>\AppData\Local\Programs\Python\Python38\lib\__pycache__`）再重跑；偶发崩溃直接重试。
+   （含 `C:\Users\<username>\AppData\Local\Programs\Python\Python38\lib\__pycache__`）再重跑；偶发崩溃直接重试。
 2. **pip 被注册表系统代理污染**（https 项是错误的 `https://127.0.0.1:7897`）→ 装包用
    `NO_PROXY="*" no_proxy="*" py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <pkg>`。
    M5 装法：`NO_PROXY="*" no_proxy="*" py -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .[web]`
