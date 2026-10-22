@@ -41,15 +41,20 @@ def main(argv=None) -> int:
     print("\n".join(rows))
     print("\n评测耗时 %.1fs。复现方式见 benchmarks/README.md；最近结果已写入 benchmarks/results.json。"
           % (time.perf_counter() - started))
+    # ★ results.json 是「最近一次结果的入仓记录」，必须可复现：不写 generated_at
+    #   （它是唯一带时间戳的字段，写入后重跑即 sha256 DIFF、工作树变脏）。
+    #   指标本身由固定 seed 决定，所以去掉时间戳后两次运行逐字节相同。
     out = {
-        "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "eval_parse": {k: v for k, v in parse_res.items() if k != "per_param"},
         "eval_parse_per_param": parse_res["per_param"],
         "eval_e2e": {k: v for k, v in e2e_res.items()
                      if k not in ("misses", "fps", "doc_errors")},
     }
-    Path(__file__).resolve().parent.joinpath("results.json").write_text(
-        json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    # newline="\n"：避免 Windows 文本模式把 \n 翻成 \r\n，否则同一机器两次运行虽相同、
+    # 跨平台对比却会 DIFF（与 .gitattributes 的 eol=lf 口径一致）。
+    with Path(__file__).resolve().parent.joinpath("results.json").open(
+            "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps(out, ensure_ascii=False, indent=2))
     ok = parse_res["f1"] >= 0.95 and e2e_res["detection_rate"] == 1.0 and e2e_res["forced_fp"] == 0
     return 0 if ok else 1
 

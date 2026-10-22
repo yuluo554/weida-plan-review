@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (${{ matrix.os }} / py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # 脱敏门的 metadata 模式要扫全历史；浅克隆会把它变成空验
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install (extras: dev/parse/llm/web)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,parse,llm,web]"
+
+      - name: Show version
+        run: python -m planguard info
+
+      - name: pytest
+        run: python -X utf8 -m pytest -rs
+
+      # 基准：F1 >= 0.95 / 检出 100% / 强制误报 0，未达标时脚本自身 exit 1
+      - name: Benchmarks
+        run: python -X utf8 benchmarks/run_all.py
+
+      # 端到端业务命令（零外部 API）
+      - name: Demo (end-to-end)
+        run: python -X utf8 -m planguard demo
+
+      - name: Desensitize scan (tracked)
+        run: python -X utf8 scripts/desensitize_scan.py --mode tracked
+
+      - name: Desensitize scan (metadata)
+        run: python -X utf8 scripts/desensitize_scan.py --mode metadata
+
+      - name: Desensitize scan (selftest)
+        run: python -X utf8 scripts/desensitize_scan.py --selftest

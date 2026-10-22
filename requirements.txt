@@ -1,13 +1,13 @@
 # PlanGuard 依赖分层（骨架阶段核心链路零依赖，可全部注释状态运行）
 # 按里程碑分批安装（清华镜像: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -e .[parse]）
-# 安装前核对 Python 3.8 兼容版本。
+# 安装前核对 Python 3.12 兼容版本（requires-python >=3.12，3.8/3.10 均已 EOL）。
 
 # ---- M2 解析层（已验证可用版本） ----
 # python-docx>=0.8.11   （实测 1.1.2）
 # pdfplumber>=0.10      （实测 0.11.5）
 
-# ---- 测试辅助（生成中文 PDF 样例；py3.8 必须 <4，规避 md5 usedforsecurity 兼容问题） ----
-# reportlab<4           （实测 3.6.13）
+# ---- 测试辅助（生成中文 PDF 样例） ----
+# reportlab>=3.6        （实测 5.0.1；旧的上界 <4 在 py3.12 无 cp312 wheel，只会走 sdist 并 403）
 
 # ---- M4 LLM 兜底 ----
 # openai>=1.30

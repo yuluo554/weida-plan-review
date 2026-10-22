@@ -1,0 +1,28 @@
+# 统一换行：存储层一律 LF，检出时按平台自动；避免 autocrlf 痕迹造成伪 diff
+* text=auto eol=lf
+
+# 文本类显式声明（保证跨平台位级一致）
+*.py      text eol=lf
+*.md      text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.toml    text eol=lf
+*.txt     text eol=lf
+*.cfg     text eol=lf
+*.in      text eol=lf
+*.html    text eol=lf
+*.css     text eol=lf
+*.js      text eol=lf
+
+# 二进制：不做任何换行转换、不参与文本 diff
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.zip  binary
+*.bundle binary
