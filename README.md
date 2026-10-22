@@ -16,7 +16,7 @@
 | --- | --- |
 | 统一中间表示（参数卡：值·单位·文本取值·置信度·证据链） | ✅ 已实现 |
 | 规则引擎（required / threshold / within_range / enum / conditional_program / checklist_section，结论挂依据） | ✅ 全量可用 |
-| 内置规则库（深基坑 20 + 高支模 10 条：阈值/漏项/枚举/程序性/章节齐套，示例阈值标注待核对） | ✅ M3/M5 |
+| 内置规则库（深基坑 19 + 高支模 10 = 29 条：阈值/漏项/枚举/程序性/章节齐套，示例阈值标注待核对） | ✅ M3/M5 |
 | docx/pdf 方案解析器 + 参数提取（别名归一/伪空格/超范围丢弃/页码证据） | ✅ 已实现 |
 | 端到端流水线 + 审查报告（Markdown + 可归档 docx 含签署栏；三级结论/证据/建议） | ✅ M3/M5 |
 | 条文知识库三层（raw 来源登记 / 条文块 43 块 / 阈值表 41 条，全部标注待核对） | ✅ M4/M5 |
@@ -90,7 +90,7 @@ py -m unittest discover -v
 ├── plan/          # 计划文档（需求解读/架构/详设/数据/里程碑/交付对标）
 ├── data/          # 数据四目录 + 来源许可台账（samples/intermediate/knowledge/gold）
 ├── planguard/     # 主包（ir/parsers/extract/rules/knowledge/llm/report/web）
-├── tests/         # unittest 测试（81 项，全绿）
+├── tests/         # unittest 测试（91 passed + 2 skipped，共 93 项收集）
 ├── scripts/       # make_gold.py 配对真值数据生成器
 ├── benchmarks/    # 基准评测（eval_parse / eval_e2e / run_all，results.json）
 └── pyproject.toml # 依赖分层：parse / llm / web extras

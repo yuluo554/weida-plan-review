@@ -8,7 +8,7 @@
 - [x] docx 审查报告可归档：export_docx（python-docx）六大节+签署栏，check 默认同时导出 md+docx（orchestrator report/report_docx 阶段）。
 - [x] 高支模扩展 + 基准：fs 模板 5 类注入 + fs.* 规则 9 条（R-FS-002/003/004/012/031/041/051/101/102）+ 10 份样例；40 份语料 检出 80/80=100%、误报 0、F1=1.0000。
 - [x] 高支模阈值表 16 条（≥15）+ JGJ 162-2008 条文块 8 块入库，全部"待核对"；知识库总 41 阈值/43 块。
-- [x] 全量测试三轮绿：81 项（2 skip=pdf/reportlab 可选依赖），OK (skipped=2) ×3。
+- [x] 全量测试三轮绿：81 项（2 skip=pdf/reportlab 可选依赖），OK (skipped=2) ×3。**（2026-10-22 二次迭代后为 91 passed + 2 skipped = 93 收集，见 update/03-执行记录.md）**
 - [x] plan/00、04、05 回写（偏差已注明）+ data/README 台账 + README 特性/评测表/快速开始同步 + 提交推送。
 
 ## M5 关键实现落点（新会话速查）

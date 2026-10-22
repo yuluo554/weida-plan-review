@@ -14,6 +14,7 @@
 import argparse
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 from . import __version__
@@ -22,7 +23,8 @@ from .rules.engine import DEFAULT_RULES_DIR, RuleEngine, load_rules
 MODULE_STATUS = [
     ("已就绪", "ir/schema       统一中间表示（参数卡/证据/结论，含文本型取值）"),
     ("全量可用", "rules/engine    规则引擎（required/threshold/within_range/enum/conditional/checklist）"),
-    ("29 条", "rules/data      规则库（深基坑 20 + 高支模 10，示例阈值标注待核对）"),
+    # 规则库一行按实际 category 统计生成（见 cmd_info），不硬编码数字
+    (None, "rules/data      规则库（{inventory}，示例阈值标注待核对）"),
     ("已实现", "parsers/docx    docx 方案解析器"),
     ("已实现", "parsers/pdf     文本型 pdf 解析器"),
     ("M3 已接通", "orchestrator    端到端流水线编排"),
@@ -45,12 +47,23 @@ def _utf8_console() -> None:
             pass
 
 
+def _rules_inventory(rules) -> str:
+    """按 category 实际统计生成规则库摘要（不硬编码数字，增删规则时文案自动跟上）。"""
+    cnt = Counter(r.category for r in rules)
+    label = {"deep_pit": "深基坑", "formwork_support": "高支模"}
+    parts = ["%s %d" % (label.get(k, k), cnt[k]) for k in sorted(cnt, key=lambda k: (-cnt[k], k))]
+    return "%s = %d 条" % (" + ".join(parts), len(rules))
+
+
 def cmd_info(_args) -> int:
+    inventory = _rules_inventory(load_rules(DEFAULT_RULES_DIR))
     print("PlanGuard v%s（%s）" % (__version__, __import__("planguard").__status__))
     print()
     print("模块状态（里程碑详见 plan/05-里程碑.md）：")
     for status, name in MODULE_STATUS:
-        print("  [%s] %s" % (status, name))
+        if status is None:
+            status = "%d 条" % len(load_rules(DEFAULT_RULES_DIR))
+        print("  [%s] %s" % (status, name.format(inventory=inventory) if "{inventory}" in name else name))
     print()
     print("快速开始: py -m planguard demo")
     return 0
@@ -142,10 +155,14 @@ def cmd_demo(_args) -> int:
     )
     _print_review(result)
     if result.meta["rules_skipped"]:
+        # 这 N 条不是"未实现"，而是本次演示没给方案文档（doc=None）→ 走 DOC_REQUIRED 的
+        # skipped 分支；真实 check 命令会正常执行它们。
+        skipped_ids = result.meta["rules_skipped"]
+        skipped_types = sorted({r.check_type for r in rules if r.id in skipped_ids})
         print()
-        print("注: 规则 %s 的 check_type 骨架阶段未启用（%s 实现）。"
-              % (",".join(result.meta["rules_skipped"]),
-                 [r.stage for r in engine.disabled if r.id in result.meta["rules_skipped"]]))
+        print("注: 本次演示未提供方案文档，需 doc 输入的 %d 条规则（%s）未执行；"
+              % (len(skipped_ids), "/".join(skipped_types)))
+        print("    用 `py -m planguard check <方案.docx>` 可完整执行它们。")
     return 0
 
 
