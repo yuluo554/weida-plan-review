@@ -5,8 +5,15 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.support_type",
-    "only_if_text": ["基坑"],
-    "basis": "建办质〔2018〕31号：专项施工方案应包含施工工艺技术（支护形式）（条文编号待核对）",
+    "only_if_text": [
+      "基坑"
+    ],
+    "basis": {
+      "quote": "建办质〔2018〕31号：专项施工方案应包含施工工艺技术（支护形式）（条文编号待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "未定位到支护形式，请在“工程概况/施工工艺技术”章节明确支护选型。",
@@ -19,8 +26,15 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.safety_grade",
-    "only_if_text": ["基坑"],
-    "basis": "JGJ 120-2012：基坑支护设计应明确侧壁安全等级（条文编号待核对）",
+    "only_if_text": [
+      "基坑"
+    ],
+    "basis": {
+      "quote": "JGJ 120-2012：基坑支护设计应明确侧壁安全等级（条文编号待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "未定位到基坑侧壁安全等级，请补充（一级/二级/三级）。",
@@ -33,8 +47,15 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.retaining.displacement",
-    "only_if_text": ["基坑"],
-    "basis": "GB 50497-2019：基坑监测应明确位移报警/控制值（条文编号待核对）",
+    "only_if_text": [
+      "基坑"
+    ],
+    "basis": {
+      "quote": "GB 50497-2019：基坑监测应明确位移报警/控制值（条文编号待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "未定位到支护结构位移控制值，请在监测方案中明确。",
@@ -47,8 +68,15 @@
     "category": "deep_pit",
     "check_type": "required",
     "param": "dp.monitoring.frequency",
-    "only_if_text": ["基坑"],
-    "basis": "GB 50497-2019：监测方案应明确监测频率（条文编号待核对）",
+    "only_if_text": [
+      "基坑"
+    ],
+    "basis": {
+      "quote": "GB 50497-2019：监测方案应明确监测频率（条文编号待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "未定位到监测频率，请在监测方案中明确各工况频率。",
@@ -64,7 +92,12 @@
     "min_value": 5,
     "max_value": 100,
     "unit": "mm",
-    "basis": "工程合理性校核（示例区间，以设计文件为准）",
+    "basis": {
+      "quote": "工程合理性校核（示例区间，以设计文件为准）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "位移控制值实测 {value}{unit} 超出合理区间，请与设计文件核对。",
@@ -78,8 +111,17 @@
     "category": "deep_pit",
     "check_type": "enum",
     "param": "dp.safety_grade",
-    "allowed": ["一级", "二级", "三级"],
-    "basis": "JGJ 120-2012：基坑侧壁安全等级分为一/二/三级（条文编号待核对）",
+    "allowed": [
+      "一级",
+      "二级",
+      "三级"
+    ],
+    "basis": {
+      "quote": "JGJ 120-2012：基坑侧壁安全等级分为一/二/三级（条文编号待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "安全等级取值不合法，应为一级/二级/三级。",
@@ -92,8 +134,25 @@
     "category": "deep_pit",
     "check_type": "enum",
     "param": "dp.support_type",
-    "allowed": ["放坡", "土钉墙", "桩锚", "排桩", "地下连续墙", "地连墙", "钢板桩", "SMW", "内支撑", "锚杆", "重力式挡墙"],
-    "basis": "JGJ 120-2012 常用支护形式清单（整理版，非穷举）",
+    "allowed": [
+      "放坡",
+      "土钉墙",
+      "桩锚",
+      "排桩",
+      "地下连续墙",
+      "地连墙",
+      "钢板桩",
+      "SMW",
+      "内支撑",
+      "锚杆",
+      "重力式挡墙"
+    ],
+    "basis": {
+      "quote": "JGJ 120-2012 常用支护形式清单（整理版，非穷举）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "支护形式「{value}」不在常见选型清单内，请人工复核。",
@@ -106,19 +165,77 @@
     "category": "deep_pit",
     "check_type": "checklist_section",
     "param": "doc.sections",
-    "only_if_text": ["基坑"],
-    "sections": [
-      {"title": "工程概况", "keywords": ["工程概况"]},
-      {"title": "编制依据", "keywords": ["编制依据"]},
-      {"title": "施工计划", "keywords": ["施工计划", "进度计划"]},
-      {"title": "施工工艺技术", "keywords": ["施工工艺", "施工方案"]},
-      {"title": "施工安全保证措施", "keywords": ["安全保证措施", "安全措施"]},
-      {"title": "施工管理及作业人员配备和分工", "keywords": ["施工管理", "人员配备"]},
-      {"title": "验收要求", "keywords": ["验收"]},
-      {"title": "应急处置措施", "keywords": ["应急处置", "应急预案"]},
-      {"title": "计算书及相关图纸", "keywords": ["计算书", "相关图纸"]}
+    "only_if_text": [
+      "基坑"
     ],
-    "basis": "建办质〔2018〕31号 附件1：专项施工方案内容要求（待核对）",
+    "sections": [
+      {
+        "title": "工程概况",
+        "keywords": [
+          "工程概况"
+        ]
+      },
+      {
+        "title": "编制依据",
+        "keywords": [
+          "编制依据"
+        ]
+      },
+      {
+        "title": "施工计划",
+        "keywords": [
+          "施工计划",
+          "进度计划"
+        ]
+      },
+      {
+        "title": "施工工艺技术",
+        "keywords": [
+          "施工工艺",
+          "施工方案"
+        ]
+      },
+      {
+        "title": "施工安全保证措施",
+        "keywords": [
+          "安全保证措施",
+          "安全措施"
+        ]
+      },
+      {
+        "title": "施工管理及作业人员配备和分工",
+        "keywords": [
+          "施工管理",
+          "人员配备"
+        ]
+      },
+      {
+        "title": "验收要求",
+        "keywords": [
+          "验收"
+        ]
+      },
+      {
+        "title": "应急处置措施",
+        "keywords": [
+          "应急处置",
+          "应急预案"
+        ]
+      },
+      {
+        "title": "计算书及相关图纸",
+        "keywords": [
+          "计算书",
+          "相关图纸"
+        ]
+      }
+    ],
+    "basis": {
+      "quote": "建办质〔2018〕31号 附件1：专项施工方案内容要求（待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "请按建办质〔2018〕31号补齐专项方案必备章节。",
@@ -131,11 +248,24 @@
     "category": "deep_pit",
     "check_type": "checklist_section",
     "param": "doc.sections",
-    "only_if_text": ["基坑"],
-    "sections": [
-      {"title": "监测方案", "keywords": ["监测方案", "监测"]}
+    "only_if_text": [
+      "基坑"
     ],
-    "basis": "GB 50497-2019：基坑工程应实施第三方监测并编制监测方案（待核对）",
+    "sections": [
+      {
+        "title": "监测方案",
+        "keywords": [
+          "监测方案",
+          "监测"
+        ]
+      }
+    ],
+    "basis": {
+      "quote": "GB 50497-2019：基坑工程应实施第三方监测并编制监测方案（待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "未检出监测方案相关章节，请补充。",
@@ -151,7 +281,12 @@
     "op": ">=",
     "value": 2,
     "unit": "次/d",
-    "basis": "GB 50497-2019 监测频率要求（示例阈值，一级基坑建议值，以官方文本为准）",
+    "basis": {
+      "quote": "GB 50497-2019 监测频率要求（示例阈值，一级基坑建议值，以官方文本为准）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "监测频率实测 {value}{unit}，低于建议值 {limit}{unit}；请结合基坑安全等级复核。",
@@ -168,7 +303,12 @@
     "op": ">=",
     "value": 5,
     "unit": "mm",
-    "basis": "工程合理性校核（示例阈值）",
+    "basis": {
+      "quote": "工程合理性校核（示例阈值）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "位移控制值实测 {value}{unit} 明显偏小，请复核取值依据。",
@@ -185,7 +325,12 @@
     "min_value": 2,
     "max_value": 50,
     "unit": "m",
-    "basis": "工程合理性校核（示例区间）",
+    "basis": {
+      "quote": "工程合理性校核（示例区间）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "开挖深度实测 {value}{unit} 超出常见区间，请复核。",
@@ -202,7 +347,12 @@
     "op": "<=",
     "value": 24,
     "unit": "次/d",
-    "basis": "工程合理性校核（示例阈值）",
+    "basis": {
+      "quote": "工程合理性校核（示例阈值）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "监测频率实测 {value}{unit} 异常偏大，请复核。",
@@ -219,7 +369,12 @@
     "op": "<=",
     "value": 500,
     "unit": "mm",
-    "basis": "工程合理性校核（示例阈值）",
+    "basis": {
+      "quote": "工程合理性校核（示例阈值）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "建议",
     "severity": "warning",
     "advice": "位移控制值实测 {value}{unit} 异常偏大，请复核。",
@@ -233,9 +388,16 @@
     "category": "deep_pit",
     "check_type": "conditional_program",
     "param": "dp.excavation_depth",
-    "condition": {"min": 3},
+    "condition": {
+      "min": 3
+    },
     "require_text": "监测",
-    "basis": "住建部令第37号/建办质〔2018〕31号：开挖深度≥3m 的基坑属危大工程，应实施监测（待核对）",
+    "basis": {
+      "quote": "住建部令第37号/建办质〔2018〕31号：开挖深度≥3m 的基坑属危大工程，应实施监测（待核对）",
+      "status": "待核对",
+      "reviewed_at": "2026-09-27",
+      "next_review": "2027-09-27"
+    },
     "level": "强制",
     "severity": "error",
     "advice": "方案未检出监测相关内容，请按危大工程要求编制监测方案。",

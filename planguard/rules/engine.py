@@ -63,6 +63,13 @@ class Rule:
 
 
 def _rule_from_dict(data: Dict[str, Any]) -> Rule:
+    # basis 允许是结构化对象 {quote, status, reviewed_at, next_review}（schema 由
+    # tests/test_basis_schema.py 守门）；此处取 quote 落回 str，使 Rule.basis 与
+    # Finding.basis 仍是纯字符串，report/ 与 web/ 的渲染层无需改动。
+    b = data.get("basis")
+    if isinstance(b, dict):
+        data = dict(data)
+        data["basis"] = b.get("quote") or b.get("standard") or ""
     for key in ("id", "name", "check_type", "param", "basis"):
         if not data.get(key):
             raise RuleError("规则缺少必填字段 %s: %r" % (key, data.get("id", data)))
