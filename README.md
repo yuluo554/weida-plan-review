@@ -1,10 +1,15 @@
 # PlanGuard（方案卫士）
 
+[![CI](https://github.com/yuluo554/weida-plan-review/actions/workflows/ci.yml/badge.svg)](https://github.com/yuluo554/weida-plan-review/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/yuluo554/weida-plan-review)](https://github.com/yuluo554/weida-plan-review/releases/latest)
+[![Python](https://img.shields.io/badge/python-%E2%89%A53.12-blue)](pyproject.toml)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 > 危大工程专项施工方案智能审查系统 —— 挑战赛道赛题 1「工程大模型 Agent 智能应用系统设计」· 主题 1
 >
 > **规则优先 + LLM 兜底**：方案文档（docx/pdf）解析为结构化"参数卡"，与机器可读的规范规则库做确定性合规校核；每条结论挂依据条款与原文证据，多值冲突不硬判、输出"待人工确认"。
 
-🚧 **当前状态：M6 脱敏发布完成（v0.1.0，M1–M6 全部收官）** —— `check` 端到端审查（md+docx 报告）、`ask` 条文问答、LLM 兜底抽取（防幻觉三件套）、Web 审查面板（断网可演示）、两个基准脚本（零 API 可复现）；发布自检见 [plan/06-交付对标.md](plan/06-交付对标.md) §3。
+✅ **当前状态：v0.1.0 已发布（M1–M6 全部收官）** —— [`v0.1.0` Release](https://github.com/yuluo554/weida-plan-review/releases/tag/v0.1.0)（annotated tag，不附打包产物：本仓是纯 Python 包，`pip install -e .` 或 `py -m planguard` 免安装运行）；CI 覆盖 ubuntu-latest / windows-latest × Python 3.12（pytest + 两个基准 + demo + 脱敏三模式）。能力：`check` 端到端审查（md+docx 报告）、`ask` 条文问答、LLM 兜底抽取（防幻觉三件套）、Web 审查面板（断网可演示）、两个基准脚本（零 API 可复现）；发布自检见 [plan/06-交付对标.md](plan/06-交付对标.md) §3。
 
 ## 为什么做
 
