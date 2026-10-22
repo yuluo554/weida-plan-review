@@ -7,6 +7,8 @@
 3. CLI ``info`` 的规则库文案由 category 统计生成，不出现硬编码的旧数字。
 """
 import re
+import subprocess
+import sys
 import unittest
 from collections import Counter
 from contextlib import redirect_stdout
@@ -59,6 +61,28 @@ class TestRuleInventory(unittest.TestCase):
         self.assertEqual(cli._rules_inventory(self.rules),
                          "深基坑 %d + 高支模 %d = %d 条" % (
                              BY_CATEGORY["deep_pit"], BY_CATEGORY["formwork_support"], TOTAL))
+
+
+class TestSelfReportedTestCount(unittest.TestCase):
+    """README 目录树里自述的测试数必须与实际收集数一致。
+
+    本仓在这一轮就漂过一次（先写 81、改完批次三写 91、实际定稿 104）。
+    自述计数没有门就会一直漂，所以让 pytest 自己数自己。
+    """
+
+    def test_readme_test_count_matches_collection(self):
+        proc = subprocess.run([sys.executable, "-X", "utf8", "-m", "pytest",
+                               "--collect-only", "-q"],
+                              cwd=REPO, capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        m = re.search(r"(\d+)\s+tests? collected", proc.stdout + proc.stderr)
+        self.assertIsNotNone(m, "拿不到收集数：\n" + proc.stdout + proc.stderr)
+        collected = int(m.group(1))
+        text = README.read_text(encoding="utf-8")
+        m2 = re.search(r"共\s*(\d+)\s*项收集", text)
+        self.assertIsNotNone(m2, "README 目录树缺少「共 N 项收集」的测试计数")
+        self.assertEqual(int(m2.group(1)), collected,
+                         "README 写 %s 项收集，实际收集 %d —— 请同步" % (m2.group(1), collected))
 
 
 if __name__ == "__main__":

@@ -90,7 +90,7 @@ py -m unittest discover -v
 ├── plan/          # 计划文档（需求解读/架构/详设/数据/里程碑/交付对标）
 ├── data/          # 数据四目录 + 来源许可台账（samples/intermediate/knowledge/gold）
 ├── planguard/     # 主包（ir/parsers/extract/rules/knowledge/llm/report/web）
-├── tests/         # unittest 测试（91 passed + 2 skipped，共 93 项收集）
+├── tests/         # unittest 测试（105 passed + 2 skipped，共 107 项收集）
 ├── scripts/       # make_gold.py 配对真值数据生成器
 ├── benchmarks/    # 基准评测（eval_parse / eval_e2e / run_all，results.json）
 └── pyproject.toml # 依赖分层：parse / llm / web extras
