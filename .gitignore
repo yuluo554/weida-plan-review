@@ -27,6 +27,9 @@ run/
 # 生成样例语料（scripts/make_gold.py，合成数据，随仓库入库支撑评测复现）；
 # 真实/大文件私料放 data/**/_private/（上方已忽略）
 
+# 二次迭代交接物（update/ 是本地诊断与执行记录，不入库）
+update/
+
 # IDE / OS
 .idea/
 .vscode/
